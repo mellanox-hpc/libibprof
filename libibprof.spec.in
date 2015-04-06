@@ -1,0 +1,115 @@
+%define rel @RPM_RELEASE@
+%define version @VERSION@
+%define pkgname @PACKAGE@
+%define prefix @prefix@
+%define __check_files %{nil}
+%define _prefix %{prefix}
+%define _libdir %{prefix}/lib
+%define  debug_package %{nil}
+%global _binary_filedigest_algorithm 1
+%global _source_filedigest_algorithm 1
+
+%{!?configure_opts:       %define configure_opts       %{nil}}
+
+
+
+
+
+%define lt_release @LT_RELEASE@
+%define lt_version @LT_CURRENT@.@LT_REVISION@.@LT_AGE@
+
+
+Name: %{pkgname}
+Summary: IB Verbs profiling library
+Version: %{version}
+Release: %{rel}
+
+License: Proprietary
+Group: Applications
+Source: %{pkgname}-%{version}.tar.gz
+Requires: libibverbs hcoll mxm >= 2.0
+BuildRequires: gcc-c++ libstdc++ libstdc++-devel libibverbs-devel hcoll mxm >= 2.0
+BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+URL: http://www.mellanox.com
+Prefix: %{prefix}
+Provides: libibverbs
+Packager: mellanox
+Vendor: mellanox
+
+
+%description
+Libibprof is IB verbs profiling library.
+it intercepts calls to verbs.h API and generates basic tracing information
+
+%prep
+rm -rf $RPM_BUILD_ROOT
+
+%setup -q
+#%patch
+
+%build
+
+mxm_dir=$(pkg-config --variable=prefix mxm||:)
+hcoll_dir=$(pkg-config --variable=prefix hcoll||:)
+
+RPM_CPPFLAGS=""
+if [ -d "$mxm_dir" ]; then
+    RPM_CPPFLAGS="$RPM_CPPFLAGS -I$mxm_dir/include -DUSE_MXM=1"
+fi
+
+if [ -d "$hcoll_dir" ]; then
+    RPM_CPPFLAGS="$RPM_CPPFLAGS -I$hcoll_dir/include -DUSE_HCOLL=1 -Wno-unused-variable"
+fi
+
+test -n "$RPM_CPPFLAGS" && CPPFLAGS="${RPM_CPPFLAGS}"
+
+%configure %{?configure_opts}
+make
+
+%install
+rm -rf "$RPM_BUILD_ROOT"
+
+# Strip out some dependencies
+cat > find-requires.sh <<'EOF'
+exec %{__find_requires} "$@" | egrep -v '^perl'
+EOF
+chmod +x find-requires.sh
+%define _use_internal_dependency_generator 0
+%define __find_requires %{_builddir}/%{buildsubdir}/find-requires.sh
+
+make DESTDIR="$RPM_BUILD_ROOT" install
+mkdir -p $RPM_BUILD_ROOT/etc/ld.so.conf.d/
+echo %{_libdir} > $RPM_BUILD_ROOT/etc/ld.so.conf.d/libibprof.conf
+
+%clean
+# We may be in the directory that we're about to remove, so cd out of
+# there before we remove it
+cd /tmp
+
+# Remove installed driver after rpm build finished
+chmod -R o+w $RPM_BUILD_DIR/%{name}-%{version}
+rm -rf $RPM_BUILD_DIR/%{name}-%{version}
+
+test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
+
+
+%files
+%defattr(-, root, root)
+%{prefix}
+/etc/ld.so.conf.d/libibprof.conf
+
+# Your application file list goes here
+# %{prefix}/lib/lib*.so*
+#%doc COPYRIGHT ChangeLog README AUTHORS NEWS
+#%doc doc/*
+
+# If you install a library
+%post
+/sbin/ldconfig || exit 1
+exit 0
+
+# If you install a library
+%postun
+/sbin/ldconfig
+exit 0
+

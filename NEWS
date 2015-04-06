@@ -1,0 +1,13 @@
+
+This file contains the main features as well as overviews of specific
+bug fixes (and other actions) for each version of libibprof since
+version 1.0.
+
+
+1.1
+---
+
+* initial release
+* profiling verbs, mxm and hcoll pckages
+* error injection
+

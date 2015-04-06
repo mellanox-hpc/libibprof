@@ -1,0 +1,172 @@
+# Copyright (c) 2013-2015 Mellanox Technologies, Inc.
+#                         All rights reserved
+# $COPYRIGHT$
+
+
+* What is libibprof
+
+- Libibprof is a profiling library for OFA verbs library and Mellanox MXM/HCOLL libraries.
+- Libibprof has plugin for error injection into verb library API to simulate network failures.
+
+It is a portable profiling infrastructure for parallel codes. It provides low-overhead performance
+summary of the calls from libibverbs.so, libmxm.so, libhcoll.so libraries.
+
+
+
+* Usage Examples:
+
+** From verbs application
+
+% LD_PRELOAD=libibprof.so ibv_devinfo
+
+===============================================================================================
+
+libibverbs                     :      count    total(ms)      avg(ms)      max(ms)      min(ms)
+===============================================================================================
+ibv_get_device_list            :          1       0.8897       0.8897       0.8897       0.8897
+ibv_free_device_list           :          1       0.0001       0.0001       0.0001       0.0001
+ibv_open_device                :          2       2.7479       1.3739       2.4120       0.3358
+ibv_close_device               :          2       1.7194       0.8597       1.6812       0.0382
+ibv_query_port                 :          4       1.8440       0.4610       0.8201       0.1702
+ibv_exp_query_device           :          2       0.3972       0.1986       0.2835       0.1137
+===============================================================================================
+total                          :                  7.5982
+===============================================================================================
+wall time (%)                  :                  0.0010 %
+===============================================================================================
+
+<snip>
+
+** From MPI:
+
+% LD_PRELOAD=libibprof.so mpirun -x LD_PRELOAD -np 8 mpi_hello
+
+Hello from task 1 on jenkins01!
+Hello from task 3 on jenkins01!
+Hello from task 5 on jenkins01!
+Hello from task 7 on jenkins01!
+Hello from task 2 on jenkins01!
+Hello from task 6 on jenkins01!
+Hello from task 0 on jenkins01!
+Hello from task 4 on jenkins01!
+
+===============================================================================================
+
+libibverbs                     :      count    total(ms)      avg(ms)      max(ms)      min(ms)
+===============================================================================================
+ibv_get_device_list            :          1       2.6830       2.6830       2.6830       2.6830
+ibv_free_device_list           :          1       0.0003       0.0003       0.0003       0.0003
+ibv_open_device                :          1       0.4915       0.4915       0.4915       0.4915
+ibv_close_device               :          1       0.0357       0.0357       0.0357       0.0357
+ibv_create_comp_channel        :          2       0.0093       0.0047       0.0050       0.0044
+ibv_destroy_comp_channel       :          2       0.0074       0.0037       0.0038       0.0037
+ibv_query_port                 :          3       1.3320       0.4440       0.6961       0.1486
+ibv_alloc_pd                   :          1       0.0041       0.0041       0.0041       0.0041
+ibv_dealloc_pd                 :          1       0.0042       0.0042       0.0042       0.0042
+ibv_dereg_mr                   :          3       2.2027       0.7342       1.4345       0.3286
+ibv_create_cq                  :          3      12.4912       4.1637       6.6688       2.4448
+ibv_poll_cq                    :        350       0.1092       0.0003       0.0021       0.0000
+
+===============================================================================================
+
+<snip>
+
+
+* How to install:
+
+  The libibprof package uses the GNU autotools compilation and installation
+  framework.
+
+    $ ./autogen.sh
+    $ ./configure --prefix=<path to install>
+    $ make
+    $ make install
+
+  To compile with debug symbols and information:
+
+    $ ./configure --prefix=<path to install> --enable-debug
+
+  Use special environment variable to tune debug output
+
+    $ export IBPROF_TEST_MASK=0xFF
+
+  Bit fields:
+    0 - fatal
+    1 - error
+    2 - warn
+    3 - info
+    2 - trace
+
+  To compile with custom OFED:
+
+    $ ./configure --prefix=<path to install> --with-ofed=<path to ofed>
+
+  Type './configure --help' for a list of all the configure
+  options. Some of the options are generic autoconf options, while the ibprof
+  specific options are prefixed with "IBPROF:" in the help text.
+
+  Available modules can be managed during build procedure with CPPFLAGS (-DUSE_XXX=(0|1)):
+
+    $ ./configure --prefix=<path to install> --with-ofed=<path to ofed> CPPFLAGS="-I/opt/mellanox/mxm/include -DUSE_MXM=1"
+
+
+    USE_IBV  - libibverbs (set as default)
+    USE_HCOL - libhcoll
+    USE_MXM  - libmxm
+
+  You also can enable/disable modules at runtime, it's not mean that they won't trap function calls, but it's a way to determine
+  output from which modules you want to seen at the end of run. See example below.
+
+    $ export IBPROF_MODE=USE_IBV=0,USE_HCOL=1
+
+  Use this string to enable libibverbs and disable libhcoll profiling. Input string is case insensitive and separated by commas as
+  shown in example.
+  Possible values are:
+
+    0 - none (transparent mode)
+    1 - time profiling
+    2 - error injection:
+        IBPROF_ERR_SEED - value for random generator
+        IBPROF_ERR_PERCENT - % of failures
+    3 - verbose
+        IBPROF_TEST_MASK - 5th bit should be ON
+
+  You can separate information related processes in different files using
+
+    $ export IBPROF_DUMP_FILE=<file>
+
+  Special symbols in file name:
+
+    %J - Job ID
+    %H - Host name
+    %T - Process ID (rank)
+
+  Or you can use following options to prefix output from each process with it's hostname and pid
+
+    $ export IBPROF_OUTPUT_PREFIX=1
+
+  You can specify output format as xml to ease gathering results with parsing scripts.
+
+    $ export IBPROF_FORMAT=xml
+
+  Like IBPROF_MODE option, format option is also case insensitive.
+
+* How to use:
+
+    $ LD_PRELOAD=<path to install>/lib/libibprof.so ibv_devinfo
+
+* Measuring arbitrary intervals:
+
+  In order to measure an arbitrary interval of code flow with ibprof one can use 2 APIs: ibprof_interval_start(int,char *), ibprof_interval_end(int).
+  These two calls correspond to the start and end of the interval being measured respectively. The int argument to the calls is interval unique identifier,
+  i.e. for the same interval int id for ibprof_interval_start and ibprof_interval_end should match and no other interval should use the same id.
+  The char * argument is a string parameter that will be used in the output to describe the interval. For example:
+
+  ibprof_interval_start(111, "some interval");
+  <.... your code you want to profile ....>
+  ibprof_interval_end(111);
+
+  Don't forget to preload libibprof when running tests.
+
+Good luck!
+

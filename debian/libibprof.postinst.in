@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+if [ @prefix@ != /usr/lib/pkgconfig ];then
+    install -m 755 @prefix@/lib/pkgconfig/@PACKAGE@.pc /usr/lib/pkgconfig/@PACKAGE@.pc
+fi

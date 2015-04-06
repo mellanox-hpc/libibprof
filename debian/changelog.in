@@ -1,0 +1,5 @@
+@PACKAGE@ (@MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@) unstable; urgency=low
+
+  * Initial release.
+
+ -- Mellanox Ltd. <support@mellanox.com>  Mon, 07 Oct 2013 14:03:55 +0200

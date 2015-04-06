@@ -1,0 +1,14 @@
+Source: @PACKAGE@
+Section: libs
+Priority: extra
+Maintainer: Mellanox Technologies Ltd. <support@mellanox.com>
+Build-Depends: libibverbs-dev
+Standards-Version: @MAJOR_VERSION@.@MINOR_VERSION@
+Homepage: http://www.mellanox.com
+
+Package: @PACKAGE@
+Section: libs
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Architecture: all
+Description: libibprof is IB verbs profiling library.
+ It intercepts calls to verbs.h API and generates basic tracing information

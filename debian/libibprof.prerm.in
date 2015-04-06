@@ -1,0 +1,7 @@
+#!/bin/sh
+
+IBPROFPC=/usr/lib/pkgconfig/@PACKAGE@.pc
+
+if [  -f  $IBPROFPC ];then
+    rm -f $IBPROFPC
+fi
