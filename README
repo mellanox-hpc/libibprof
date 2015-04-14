@@ -95,7 +95,7 @@ ibv_poll_cq                    :        350       0.1092       0.0003       0.00
     1 - error
     2 - warn
     3 - info
-    2 - trace
+    4 - trace
 
   To compile with custom OFED:
 
