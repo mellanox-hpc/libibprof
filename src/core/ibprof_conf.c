@@ -136,6 +136,7 @@ static void _ibprof_conf_dump_file(char *str)
 	char buf[1024];
 	char *dest = buf;
 	int dest_len = 0;
+        char *tmp = NULL;
 
 	while (pattern && ((max_len - dest_len) > 1)) {
 		char c = *pattern++;
@@ -160,11 +161,13 @@ static void _ibprof_conf_dump_file(char *str)
 			break;
 
 		case 'H': /* add Host name */
+                        tmp = sys_host();
 			ret =
 					sys_snprintf_safe(
 							(dest + dest_len),
 							(max_len - dest_len),
-							"%s", sys_host());
+							"%s", tmp);
+			sys_free(tmp);
 			break;
 
 		case 'T': /* add Task ID */

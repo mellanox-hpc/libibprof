@@ -46,7 +46,7 @@ CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE -D__LINUX__ -D__MODULE_VERSION=$VERSION"
 #
 AC_ARG_WITH([ofed],
             [AC_HELP_STRING([--with-ofed(=DIR)],
-                            [Build OpenFabrics support, adding DIR/include, DIR/lib, and DIR/lib64 to the search path for headers and libraries])],
+                            [IBPROF: build OpenFabrics support, adding DIR/include, DIR/lib, and DIR/lib64 to the search path for headers and libraries])],
             [],
             [with_ofed=/usr]
             )
@@ -195,6 +195,55 @@ if test $MOFED_VERSION -gt 0; then
 	AC_MSG_NOTICE([Current VERBS API version : $MOFED_VERSION])
 else
 	AC_MSG_NOTICE([Current VERBS API version : legacy])
+fi
+
+# Check if the compiler has support for visibility, like some
+# versions of gcc, icc Sun Studio cc.
+AC_ARG_ENABLE(visibility, 
+    AC_HELP_STRING([--enable-visibility],
+        [IBPROF: enable visibility feature of certain compilers/linkers (default: enabled)]))
+
+ac_visibility_define=0
+ac_msg="whether to enable symbol visibility"
+
+if test "$ac_enable_visibility" = "no"; then
+    AC_MSG_CHECKING([$ac_msg])
+    AC_MSG_RESULT([no (disabled)]) 
+else
+    CFLAGS_orig=$CFLAGS
+
+    # Check using -fvisibility=hidden
+    ac_add=-fvisibility=hidden
+    CFLAGS="$ac_add -Werror"
+
+    AC_MSG_CHECKING([if $CC supports $ac_add])
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+        #include <stdio.h>
+        __attribute__((visibility("default"))) int foo;
+        ]],[[fprintf(stderr, "Hello, world\n");]])],
+        [AS_IF([test -s conftest.err],
+               [$GREP -iq visibility conftest.err
+                # If we find "visibility" in the stderr, then
+                # assume it doesn't work
+                AS_IF([test "$?" = "0"], [ac_add=])])
+        ], [ac_add=])
+    AS_IF([test "$ac_add" = ""],
+          [AC_MSG_RESULT([no])],
+          [AC_MSG_RESULT([yes])])
+
+    CFLAGS=$CFLAGS_orig
+
+    if test "$ac_add" != "" ; then
+        AC_MSG_CHECKING([$ac_msg])
+        AC_MSG_RESULT([yes (via $ac_add)])
+        CFLAGS="$CFLAGS -fvisibility=hidden -DHAVE_VISIBILITY"
+    elif test "$enable_visibility" = "yes"; then
+        AC_MSG_ERROR([Symbol visibility support requested but compiler does not seem to support it.  Aborting])
+    else
+        AC_MSG_CHECKING([$ac_msg])
+        AC_MSG_RESULT([no (unsupported)])
+    fi
+    unset ac_add
 fi
 
 RPM_RELEASE=1

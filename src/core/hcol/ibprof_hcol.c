@@ -92,7 +92,13 @@ static struct module_context_t {
 DECLARE_OPTION_FUNCTIONS_PROTOTYPED(type) \
 DECLARE_OPTION_STRUCT(type)
 
+#if defined(HAVE_VISIBILITY)
+#pragma GCC visibility push(default)
+#endif
 DECLARE_OPTION_FUNCTIONS_PROTOTYPED( )
+#if defined(HAVE_VISIBILITY)
+#pragma GCC visibility pop
+#endif
 
 #define PREFIX_NONE(x) NONE##x,
 DECLARE_OPTION(NONE)
