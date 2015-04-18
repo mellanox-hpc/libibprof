@@ -134,6 +134,7 @@ EOF
 
   # Test OMPI with MXM
   echo "Test OMPI with MXM"
+  module load mlnx-hpc-latest/gcc/stack
   module load mlnx-hpc-latest/gcc/ompi-1.8
   mkdir -p $PKG_HOME/bin
   mpicc -o $PKG_HOME/bin/mpi_hello mpi_hello.c
