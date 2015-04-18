@@ -1,7 +1,5 @@
 #!/bin/bash -xeE
 
-rc=0
-
 if [ ! -d "$WORKSPACE" ]; then
     WORKSPACE=$PWD
     BUILD_NUMBER=1
@@ -87,7 +85,6 @@ EOF
   else
       echo "ok 1 ibprof_sample" >> ibprof_sample.tap
   fi
-  rc=$(($rc+$ret))
   rm -f $PKG_HOME/ibprof_sample
 
 cat >mpi_hello.c<<'EOF'
@@ -153,7 +150,6 @@ EOF
       else
           echo "ok $test_idx mpi_hello $dev" >> mpi_hello.tap
       fi
-      rc=$(($rc+$ret))
       test_idx=$(($test_idx+1))
   done
 
@@ -168,7 +164,6 @@ EOF
   else
       echo "ok 1 ibv_devinfo" >> ibv_devinfo.tap
   fi
-  rc=$(($rc+$ret))
 
   # Test Error-injection (0% of errors)
   echo "Test Error-injection with 0% of errors"
@@ -181,7 +176,6 @@ EOF
   else
       echo "ok 1 ibv_devinfo IBPROF_ERR_PERCENT=0" >> ibv_err0.tap
   fi
-  rc=$(($rc+$ret))
 
   # Test Error-injection (100% of errors)
   echo "Test Error-injection with 100% of errors"
@@ -197,7 +191,6 @@ set -e
   else
       echo "ok 1 ibv_devinfo IBPROF_ERR_PERCENT=100" >> ibv_err1.tap
   fi
-  rc=$(($rc+$ret))
 
   # Test COV
   module load tools/cov
@@ -211,16 +204,16 @@ set -e
   cov-build --dir $cov_build make $make_opt all
   nerrors=$(cov-analyze --dir $cov_build |grep "Defect occurrences found" | awk '{print $5}')
   cov-format-errors --dir $cov_build
-  rc=$(($rc+$nerrors))
 
   index_html=$(cd $cov_build && find . -name index.html | cut -c 3-)
   cov_url="$JOB_URL/ws/$cov_build_id/${index_html}"
 
-  if [ $nerrors -ne 0 ] ; then
-      echo ok Coverity found no issues > coverity.tap
+  echo "1..1" > coverity.tap
+  if [ $nerrors -eq 0 ] ; then
+      echo ok 1 Coverity found no issues >> coverity.tap
       nerrors=0
   else
-      echo "not ok Coverity Detected $nerrors failures # $cov_url" > coverity.tap
+      echo "not ok 1 Coverity Detected $nerrors failures # $cov_url" >> coverity.tap
 
       gh_cov_msg="$WORKSPACE/cov_file_${BUILD_NUMBER}.txt"
       echo "" > $gh_cov_msg
@@ -232,5 +225,3 @@ set -e
   fi
 
 fi
-
-exit $rc
