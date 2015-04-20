@@ -59,7 +59,7 @@ static IBPROF_MODULE_OBJECT *__ibprof_modules[] = {
 /*
  * It is the core of profiling facility
  */
-static IBPROF_OBJECT *ibprof_obj;	/* Verify a pointer to this object with NULL to check ACTIVE/CLOSE */
+static IBPROF_OBJECT *ibprof_obj = NULL;	/* Verify a pointer to this object with NULL to check ACTIVE/CLOSE */
 pthread_once_t ibprof_initialized = PTHREAD_ONCE_INIT;
 
 
@@ -334,10 +334,10 @@ void __attribute__((constructor)) __ibprof_init(void)
 				}
 
 				if (temp_ibprof_obj->hash_obj)
-					ibprof_hash_destroy(ibprof_obj->hash_obj);
+					ibprof_hash_destroy(temp_ibprof_obj->hash_obj);
 
 				if (temp_ibprof_obj->task_obj)
-					ibprof_task_destroy(ibprof_obj->task_obj);
+					ibprof_task_destroy(temp_ibprof_obj->task_obj);
 
 				sys_free(temp_ibprof_obj);
 			}
@@ -404,7 +404,7 @@ void __attribute__((destructor)) __ibprof_exit(void)
 			sys_fclose(ibprof_dump_file);
 			if (!sys_fstat(filename, &statbuf))
 				if (!statbuf.st_size)
-					  sys_fremove(filename);
+					  ret = sys_fremove(filename);
 		}
 	        sys_free(filename);
 	}
