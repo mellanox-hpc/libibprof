@@ -102,12 +102,12 @@ static void _ibprof_conf_init(void)
 static void _ibprof_conf_mode(char *env)
 {
 	char *lower_env, *ptr;
-	int env_len, i;
+	int i;
 
-	env_len = sys_strlen(env);
-	lower_env = (char *) sys_malloc(sizeof(char) * env_len);
+	i = sys_strlen(env);
+	lower_env = sys_strdup(env);
 
-	for (i = 0; i < env_len; i++)
+	while (i--)
 		lower_env[i] = tolower(env[i]); 
 
 	ptr = sys_strstr(lower_env, "use_ibv");
