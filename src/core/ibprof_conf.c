@@ -19,9 +19,9 @@ static void _ibprof_conf_init(void);
 void ibprof_conf_init(void)
 {
 #if defined(_DEBUG)
-	static const uint32_t ibprof_test_mask = IBPROF_LOG_FATAL | IBPROF_LOG_ERR | IBPROF_LOG_WARN | IBPROF_LOG_INFO | IBPROF_LOG_TRACE;
+	static uint32_t ibprof_test_mask = IBPROF_LOG_FATAL | IBPROF_LOG_ERR | IBPROF_LOG_WARN | IBPROF_LOG_INFO | IBPROF_LOG_TRACE;
 #else
-	static const uint32_t ibprof_test_mask = IBPROF_LOG_FATAL | IBPROF_LOG_ERR | IBPROF_LOG_WARN;
+	static uint32_t ibprof_test_mask = IBPROF_LOG_FATAL | IBPROF_LOG_ERR | IBPROF_LOG_WARN;
 #endif
 	static int ibprof_mode_ibv = IBPROF_MODE_PROF;
 	static int ibprof_mode_hcol = IBPROF_MODE_PROF;
