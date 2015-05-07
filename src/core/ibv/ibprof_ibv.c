@@ -914,6 +914,9 @@ static IBPROF_ERROR __ibv_init(IBPROF_MODULE_OBJECT *mod_obj)
 	check_dlsym(ibv_create_cq);
 	check_dlsym(ibv_resize_cq);
 	check_dlsym(ibv_destroy_cq);
+        check_dlsym(ibv_create_srq);
+        check_dlsym(ibv_modify_srq);
+        check_dlsym(ibv_query_srq);
 	check_dlsym(ibv_create_qp);
 	check_dlsym(ibv_modify_qp);
 	check_dlsym(ibv_query_qp);

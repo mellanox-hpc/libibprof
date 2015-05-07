@@ -19,9 +19,9 @@ static void _ibprof_conf_init(void);
 void ibprof_conf_init(void)
 {
 #if defined(_DEBUG)
-	static const uint32_t ibprof_test_mask = IBPROF_LOG_FATAL | IBPROF_LOG_ERR | IBPROF_LOG_WARN | IBPROF_LOG_INFO | IBPROF_LOG_TRACE;
+	static uint32_t ibprof_test_mask = IBPROF_LOG_FATAL | IBPROF_LOG_ERR | IBPROF_LOG_WARN | IBPROF_LOG_INFO | IBPROF_LOG_TRACE;
 #else
-	static const uint32_t ibprof_test_mask = IBPROF_LOG_FATAL | IBPROF_LOG_ERR | IBPROF_LOG_WARN;
+	static uint32_t ibprof_test_mask = IBPROF_LOG_FATAL | IBPROF_LOG_ERR | IBPROF_LOG_WARN;
 #endif
 	static int ibprof_mode_ibv = IBPROF_MODE_PROF;
 	static int ibprof_mode_hcol = IBPROF_MODE_PROF;
@@ -102,12 +102,12 @@ static void _ibprof_conf_init(void)
 static void _ibprof_conf_mode(char *env)
 {
 	char *lower_env, *ptr;
-	int env_len, i;
+	int i;
 
-	env_len = sys_strlen(env);
-	lower_env = (char *) sys_malloc(sizeof(char) * env_len);
+	i = sys_strlen(env);
+	lower_env = sys_strdup(env);
 
-	for (i = 0; i < env_len; i++)
+	while (i--)
 		lower_env[i] = tolower(env[i]); 
 
 	ptr = sys_strstr(lower_env, "use_ibv");
