@@ -128,6 +128,7 @@
     EMPLOY_TYPE(func_name) *f;                                          \
     FUNC_BODY_RESOLVE##ctx_type(func_name, ex_name, ctx)                \
     PRE_##type(func_name)                                               \
+    INTERNAL_CHECK();                                                   \
     ret = f(__VA_ARGS__);                                               \
     POST_RET_##type(func_name)                                          \
     PRETEND_USED(flip_ret);                                             \
@@ -138,6 +139,7 @@
     EMPLOY_TYPE(func_name) *f;                                          \
     FUNC_BODY_RESOLVE##ctx_type(func_name, ex_name, ctx)                \
     PRE_##type(func_name)                                               \
+    INTERNAL_CHECK();                                                   \
     f(__VA_ARGS__);                                                     \
     POST_##type(func_name)                                              \
     PRETEND_USED(flip_ret);
@@ -148,6 +150,7 @@
     EMPLOY_TYPE(func_name) *f;                                          \
     FUNC_BODY_RESOLVE##ctx_type(func_name, ex_name, ctx)                \
     PRE_##type(func_name)                                               \
+    INTERNAL_CHECK();                                                   \
     ret = f(__VA_ARGS__);                                               \
     POST_RET_##type(func_name)                                          \
     PRETEND_USED(flip_ret);                                             \

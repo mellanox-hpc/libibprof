@@ -158,6 +158,7 @@ enum {
 	do {                                                             \
 		if (ibprof_conf_get_int(IBPROF_TEST_MASK) & IBPROF_LOG_FATAL) \
 			fprintf(stderr, "[    FATAL ] " fmt , ##__VA_ARGS__);    \
+		exit(EXIT_FAILURE); \
 	} while (0)
 
 #define IBPROF_ERROR(fmt, ...)                                       \
@@ -189,46 +190,18 @@ enum {
 #define IBPROF_TRACE(fmt, ...)      ((void)0)
 #endif /* _DEBUG */
 
-static INLINE void *sys_dlsym(const char *symname, const char *symver)
-{
-	void *symaddr = NULL;
-#if defined(__LINUX__)
-	void *libc_handle = RTLD_NEXT;
 
-	dlerror();    /* Clear any existing error */
-	if (NULL == symver)
-		symaddr = dlsym(libc_handle, symname);
-	else
-		symaddr = dlvsym(libc_handle, symname, symver);
-
-	if (!symaddr || dlerror())
-		IBPROF_TRACE("Can't resolve %s: %s\n", symname, dlerror());
+#if defined(HAVE_CHECK)
+#define INTERNAL_CHECK() \
+	do { \
+		if (NULL == f) { \
+			IBPROF_FATAL("%s : '%s' Can`t work. Turn on verbose level to see details\n", \
+					__FUNCTION__, __MODULE_NAME); \
+		} \
+	} while (0)
 #else
+#define INTERNAL_CHECK()
 #endif
-
-	return symaddr;
-}
-
-static INLINE int sys_dlcheck(const char *libname)
-{
-	int ret = IBPROF_ERR_NONE;
-	void *libc_handle = NULL;
-#if defined(__LINUX__)
-	dlerror();    /* Clear any existing error */
-	libc_handle = dlopen(libname, RTLD_LAZY);
-
-	if (!libc_handle || dlerror()) {
-		IBPROF_WARN("Can't find %s: %s\n", libname, dlerror());
-		ret = IBPROF_ERR_NOT_EXIST;
-	}
-
-	if (libc_handle)
-		dlclose(libc_handle);
-#else
-#endif
-
-	return ret;
-}
 
 
 /**
@@ -359,6 +332,9 @@ static INLINE int sys_dlcheck(const char *libname)
 	#define sys_fread(buf, sz, count, stream)   fread(buf, sz, count, stream)
 #endif
 /** @} */
+
+void *sys_dlsym(const char *symname, const char *symver);
+int sys_dlcheck(const char *libname);
 
 /**
  * sys_hexdump
