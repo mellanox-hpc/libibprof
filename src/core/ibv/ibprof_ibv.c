@@ -710,7 +710,6 @@ static struct module_context_t {
 		HAVE_IBV_EXP_DEALLOC_MKEY_LIST_MEMORY_FUNC(TYPE)
 
 #define check_dlsym(_func)  check_dlsymv(_func, DEFAULT_SYMVER)
-#define check_dlsym_statement(_func) check_dlsym(_func);
 #define check_dlsymv(_func, _ver) \
 	do {                                                                \
 		ibv_module_context.noble._func = sys_dlsym(#_func, _ver);   \

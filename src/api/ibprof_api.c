@@ -62,6 +62,9 @@ static IBPROF_MODULE_OBJECT *__ibprof_modules[] = {
 static IBPROF_OBJECT *ibprof_obj = NULL;	/* Verify a pointer to this object with NULL to check ACTIVE/CLOSE */
 pthread_once_t ibprof_initialized = PTHREAD_ONCE_INIT;
 
+#if defined(HAVE_VISIBILITY)
+#pragma GCC visibility push(default)
+#endif
 
 inline double ibprof_timestamp(void)
 {
@@ -144,6 +147,10 @@ void ibprof_dump(void)
 		format_dump(ibprof_dump_file, ibprof_obj);
 	}
 }
+
+#if defined(HAVE_VISIBILITY)
+#pragma GCC visibility pop
+#endif
 
 /****************************************************************************
  * Static Function Declarations
@@ -230,6 +237,7 @@ static double __get_cpu_clocks_per_sec(void)
 /****************************************************************************
  * Load/unload open/exit
  ***************************************************************************/
+
 
 /*
  * Shared object initializer.

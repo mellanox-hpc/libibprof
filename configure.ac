@@ -75,6 +75,20 @@ else
 fi
 
 
+##########################
+# Enable internal check
+#
+AC_ARG_ENABLE(
+    [check],
+    [AC_HELP_STRING([--enable-check],
+                   [IBPROF: turn on internal checking (default=yes)])],
+    [enable_check=$enableval],
+    [enable_check=yes])
+if test x$enable_check = xyes; then
+    CFLAGS="$CFLAGS -DHAVE_CHECK"
+fi
+
+
 #####################################
 # Checks for header files.
 #

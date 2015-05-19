@@ -22,9 +22,6 @@
 extern "C" {
 #endif
 
-#if defined(HAVE_VISIBILITY)
-#pragma GCC visibility push(default)
-#endif
 
 /**
  * @enum
@@ -114,9 +111,6 @@ void ibprof_interval_end(int callid);
  ***************************************************************************/
 void ibprof_dump(void);
 
-#if defined(HAVE_VISIBILITY)
-#pragma GCC visibility pop
-#endif
 
 #ifdef __cplusplus
 }
