@@ -101,6 +101,10 @@ AC_CHECK_HEADERS(
 #####################################
 # Checks for libraries.
 #
+AC_CHECK_LIB([dl], [dlopen],
+    [LIBS="$LIBS -ldl"],
+    [AC_MSG_ERROR([libdl not found])])
+
 
 AC_HEADER_STDC
 
