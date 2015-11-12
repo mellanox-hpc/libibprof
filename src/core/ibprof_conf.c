@@ -26,6 +26,7 @@ void ibprof_conf_init(void)
 	static int ibprof_mode_ibv = IBPROF_MODE_PROF;
 	static int ibprof_mode_hcol = IBPROF_MODE_PROF;
 	static int ibprof_mode_mxm = IBPROF_MODE_PROF;
+	static int ibprof_mode_pmix = IBPROF_MODE_PROF;
 	static int ibprof_output_prefix = 0;
 	static int ibprof_warmup_number = 0;
 	static const char *ibprof_dump_file_name = NULL;
@@ -37,6 +38,7 @@ void ibprof_conf_init(void)
 	enviroment[IBPROF_MODE_IBV] = (void *) &ibprof_mode_ibv;
 	enviroment[IBPROF_MODE_HCOL] = (void *) &ibprof_mode_hcol;
 	enviroment[IBPROF_MODE_MXM] = (void *) &ibprof_mode_mxm;
+	enviroment[IBPROF_MODE_PMIX] = (void *) &ibprof_mode_pmix;
 	enviroment[IBPROF_OUTPUT_PREFIX] = (void *) &ibprof_output_prefix;
 	enviroment[IBPROF_WARMUP_NUMBER] = (void *) &ibprof_warmup_number;
 	enviroment[IBPROF_DUMP_FILE] = (void *) ibprof_dump_file_name;
@@ -126,6 +128,11 @@ static void _ibprof_conf_mode(char *env)
 		sscanf(ptr, "use_mxm=%d", (int *) enviroment[IBPROF_MODE_MXM]);
 	}
 
+	ptr = sys_strstr(lower_env, "use_pmix");
+	if (NULL != ptr) {
+		sscanf(ptr, "use_pmix=%d", (int *) enviroment[IBPROF_MODE_PMIX]);
+	}
+
 	sys_free(lower_env);
 }
 
@@ -202,6 +209,10 @@ int ibprof_conf_get_mode(int module)
 
 	case IBPROF_MODULE_MXM:
 		mode = ibprof_conf_get_int(IBPROF_MODE_MXM);
+		break;
+
+	case IBPROF_MODULE_PMIX:
+		mode = ibprof_conf_get_int(IBPROF_MODE_PMIX);
 		break;
 
 	default:
