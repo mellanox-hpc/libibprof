@@ -132,7 +132,7 @@ EOF
   # Test OMPI with MXM
   echo "Test OMPI with MXM"
   module load mlnx-hpc-latest/gcc/stack
-  module load mlnx-hpc-latest/gcc/ompi-1.8
+  module load mlnx-hpc-latest/gcc/ompi
   mkdir -p $PKG_HOME/bin
   mpicc -o $PKG_HOME/bin/mpi_hello mpi_hello.c
   PRELOAD=$PKG_HOME/lib/libibprof.so:$MXM_DIR/lib/libmxm.so
