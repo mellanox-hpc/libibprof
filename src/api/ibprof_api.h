@@ -28,11 +28,12 @@ extern "C" {
  * @brief List of supported module types.
  */
 enum {
-	IBPROF_MODULE_IBV = 0, /**< libibverbs */
-	IBPROF_MODULE_HCOL, /**< libhcoll */
-	IBPROF_MODULE_MXM, /**< libmxm */
-	IBPROF_MODULE_USER, /**< user defined */
-	IBPROF_MODULE_INVALID /**< invalid module */
+	IBPROF_MODULE_IBV = 0,       /**< libibverbs */
+	IBPROF_MODULE_HCOL,          /**< libhcoll */
+	IBPROF_MODULE_MXM,           /**< libmxm */
+	IBPROF_MODULE_PMIX,          /**< libpmix */
+	IBPROF_MODULE_USER,          /**< user defined */
+	IBPROF_MODULE_INVALID        /**< invalid module */
 };
 
 

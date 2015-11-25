@@ -26,7 +26,8 @@ noinst_HEADERS = \
 	core/io/ibprof_io.h \
 	core/ibv/ibprof_ibv.h \
 	core/mxm/ibprof_mxm.h \
-	core/hcol/ibprof_hcol.h
+	core/hcol/ibprof_hcol.h \
+	core/pmix/ibprof_pmix.h
 
 dist_libibprof_la_HEADERS = \
 	api/ibprof_api.h
@@ -40,8 +41,9 @@ libibprof_la_SOURCES = \
 	./core/io/ibprof_plain.c \
 	./core/io/ibprof_xml.c \
 	./core/ibv/ibprof_ibv.c \
+	./core/mxm/ibprof_mxm.c \
 	./core/hcol/ibprof_hcol.c \
-	./core/mxm/ibprof_mxm.c
+	./core/pmix/ibprof_pmix.c
 
 libibprof_ladir = $(includedir)
 
