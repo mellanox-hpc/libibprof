@@ -32,7 +32,7 @@ BuildRequires: gcc-c++ libstdc++ libstdc++-devel libibverbs-devel hcoll mxm >= 2
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 URL: http://www.mellanox.com
 Prefix: %{prefix}
-Provides: libibverbs
+Provides: libibprof
 Packager: mellanox
 Vendor: mellanox
 
