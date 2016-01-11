@@ -68,7 +68,7 @@ pthread_once_t ibprof_initialized = PTHREAD_ONCE_INIT;
 #pragma GCC visibility push(default)
 #endif
 
-inline double ibprof_timestamp(void)
+double ibprof_timestamp(void)
 {
 #if defined(CONF_TIMESTAMP) && (CONF_TIMESTAMP == 1)
 	return ((double)sys_rdtsc() / __get_cpu_clocks_per_sec());
