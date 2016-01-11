@@ -45,7 +45,7 @@ enum {
  *
  * @retval (value) - time value in seconds
  ***************************************************************************/
-inline double ibprof_timestamp(void);
+double ibprof_timestamp(void);
 
 /**
  * ibprof_update
