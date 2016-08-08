@@ -152,6 +152,10 @@ ibv_poll_cq                    :        350       0.1092       0.0003       0.00
 
   Like IBPROF_MODE option, format option is also case insensitive.
 
+  Use following variable to exclude first <count>  of measurements from result
+
+    $ export IBPROF_WARMUP_NUMBER=<count>
+
 * How to use:
 
     $ LD_PRELOAD=<path to install>/lib/libibprof.so ibv_devinfo
