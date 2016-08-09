@@ -137,12 +137,17 @@ EOF
   PRELOAD=$PKG_HOME/lib/libibprof.so:$MXM_DIR/lib/libmxm.so
   hca_port=1
   test_idx=1
+  HOSTNAME=$(hostname)
+  NP=8
+  mpirun_hosts=$( printf "${HOSTNAME}"; eval printf "%0.s,${HOSTNAME}" {1..$((NP-1))} )
+  
   ndevs=$(ibstat -l | wc -w)
   rm -f mpi_hello.tap
   echo "1..$ndevs" > mpi_hello.tap
+  set +e
   for dev in $(ibstat -l); do
       hca="${dev}:${hca_port}"
-      LD_PRELOAD=$PRELOAD timeout 10m $MPI_HOME/bin/mpirun -x LD_PRELOAD -np 8 -H $(hostname) -mca pml cm -mca mtl mxm -mca mtl_mxm_np 0 -x MXM_IB_PORTS=$hca -x MXM_TLS=ud,self $PKG_HOME/bin/mpi_hello
+      LD_PRELOAD=$PRELOAD timeout 10m $MPI_HOME/bin/mpirun -x LD_PRELOAD -np $NP -H $mpirun_hosts -mca pml cm -mca mtl mxm -mca mtl_mxm_np 0 -x MXM_IB_PORTS=$hca -x MXM_TLS=ud,self $PKG_HOME/bin/mpi_hello
       ret=$?
       if [ $ret -gt 0 ]; then
           echo "not ok $test_idx mpi_hello $dev" >> mpi_hello.tap
@@ -151,7 +156,7 @@ EOF
       fi
       test_idx=$(($test_idx+1))
   done
-
+  sеt -e
   # Test IBV
   echo "Test IBV"
   rm -f ibv_devinfo.tap
