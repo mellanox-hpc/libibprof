@@ -114,6 +114,7 @@ ibv_poll_cq                    :        350       0.1092       0.0003       0.00
     USE_HCOL - libhcoll
     USE_MXM  - libmxm
     USE_PMIX - libpmix
+    USE_SHMEM - liboshmem
 
   You also can enable/disable modules at runtime, it's not mean that they won't trap function calls, but it's a way to determine
   output from which modules you want to seen at the end of run. See example below.

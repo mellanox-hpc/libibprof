@@ -32,6 +32,7 @@ enum {
 	IBPROF_MODULE_HCOL,          /**< libhcoll */
 	IBPROF_MODULE_MXM,           /**< libmxm */
 	IBPROF_MODULE_PMIX,          /**< libpmix */
+	IBPROF_MODULE_SHMEM,        /**< libshmem */
 	IBPROF_MODULE_USER,          /**< user defined */
 	IBPROF_MODULE_INVALID        /**< invalid module */
 };

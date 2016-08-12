@@ -21,6 +21,7 @@ extern IBPROF_MODULE_OBJECT ibv_module;
 extern IBPROF_MODULE_OBJECT hcol_module;
 extern IBPROF_MODULE_OBJECT mxm_module;
 extern IBPROF_MODULE_OBJECT pmix_module;
+extern IBPROF_MODULE_OBJECT shmem_module;
 
 /****************************************************************************
  * Configuration options
@@ -54,6 +55,7 @@ static IBPROF_MODULE_OBJECT *__ibprof_modules[] = {
 	&hcol_module,
 	&mxm_module,
 	&pmix_module,
+	&shmem_module,
 	&user_module,
 	NULL
 };
