@@ -121,7 +121,7 @@ void ibprof_interval_start(int callid, const char* name)
 		entry = ibprof_hash_find(ibprof_obj->hash_obj, key);
 		if (entry){
 			if (!entry->call_name[0])
-				strcpy(entry->call_name, name);
+				strncpy(entry->call_name, name, sizeof(entry->call_name) - 1);
 			entry->t_start = ibprof_timestamp();
 		}
 	}
