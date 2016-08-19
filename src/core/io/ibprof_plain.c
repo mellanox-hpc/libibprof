@@ -66,9 +66,9 @@ void ibprof_io_plain_dump(FILE* file, IBPROF_OBJECT *ibprof_obj)
 				temp_module_obj->id,
 				ibprof_obj->task_obj->procid);
 
-			plain_output(file, "%-30s :    %20.4f\n", "total", total_time_in_ms);
+			plain_output(file, "%-30.30s :    %20.4f\n", "total", total_time_in_ms);
 			plain_output(file, DELIMITER);
-			plain_output(file, "%-30s :    %20.4f %\n", "wall time (%)", total_time_in_ms
+			plain_output(file, "%-30.30s :    %20.4f %\n", "wall time (%)", total_time_in_ms
 				/ (ibprof_obj->task_obj->wall_time * 1.0e+6));
 			plain_output(file, DELIMITER);
 		}
@@ -131,7 +131,7 @@ static const char *_ibprof_hash_format_plain(int module, const char* call_name, 
 	if (call_name && call_name[0]) {
 		ret = sys_snprintf_safe((dest + dest_len),
 			sizeof(buffer) - dest_len,
-			"%-30s : ",
+			"%-30.30s : ",
 			call_name);
 		if (ret >= 0)
 			dest_len += ret;
@@ -166,13 +166,13 @@ static void _ibprof_module_dump(FILE* file, IBPROF_MODULE_OBJECT *module_obj, IB
 	plain_output(file, "\n");
 	switch (ibprof_conf_get_mode(module_obj->id)) {
 	case IBPROF_MODE_ERR:
-		plain_output(file, "%-30s : %10s   %10s   %10s   %10s   %10s   %10s\n",
+		plain_output(file, "%-30.30s : %10s   %10s   %10s   %10s   %10s   %10s\n",
 			(module_obj->name ? module_obj->name : "unknown"), "count",
 						"total(ms)", "avg(ms)", "max(ms)", "min(ms)", "fail");
 		break;
 
 	default:
-		plain_output(file, "%-30s : %10s   %10s   %10s   %10s   %10s\n",
+		plain_output(file, "%-30.30s : %10s   %10s   %10s   %10s   %10s\n",
 			(module_obj->name ? module_obj->name : "unknown"), "count",
 						"total(ms)", "avg(ms)", "max(ms)", "min(ms)");
 		break;
@@ -190,7 +190,7 @@ static void _ibprof_module_dump(FILE* file, IBPROF_MODULE_OBJECT *module_obj, IB
 				_ibprof_hash_format_plain);
 
 			if (str && str[0]) {
-				plain_output(file, "%-30s : %s\n",
+				plain_output(file, "%-30.30s : %s\n",
 					(temp_module_call->name ? temp_module_call->name : "unknown"), str);
 			}
 			temp_module_call++;
@@ -201,7 +201,7 @@ static void _ibprof_module_dump(FILE* file, IBPROF_MODULE_OBJECT *module_obj, IB
 					_ibprof_hash_format_plain);
 
 		if (str && str[0]) {
-			plain_output(file, "%s\n", str);
+			plain_output(file, "%s", str);
 		}
 	}
 	plain_output(file, DELIMITER);

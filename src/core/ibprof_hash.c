@@ -136,6 +136,11 @@ const char *ibprof_hash_dump(IBPROF_HASH_OBJECT *hash_obj,
 				continue;
 
 			if (call == UNDEFINED_VALUE) {
+				if (!hash_obj->hash_table[i].call_name[0]) {
+					sys_snprintf_safe(hash_obj->hash_table[i].call_name,
+							  sizeof(hash_obj->hash_table[i].call_name) - 1,
+							  "%d", HASH_KEY_GET_CALL(hash_obj->hash_table[i].key));
+				}
 				call_name = hash_obj->hash_table[i].call_name;
 			} else if (call	!= HASH_KEY_GET_CALL(hash_obj->hash_table[i].key))
 				continue;
@@ -150,9 +155,10 @@ const char *ibprof_hash_dump(IBPROF_HASH_OBJECT *hash_obj,
 							format(module, call_name, "%ld %f %f %f %f %ld",
 							hash_obj->hash_table[i].count,
 	                        TO_TIME(hash_obj->hash_table[i].t_tot),
-	                        TO_TIME(hash_obj->hash_table[i].t_tot) / (hash_obj->hash_table[i].count - ibprof_conf_get_int(IBPROF_WARMUP_NUMBER)),
+	                        (hash_obj->hash_table[i].count > 0 ? 
+					TO_TIME(hash_obj->hash_table[i].t_tot) / (hash_obj->hash_table[i].count - ibprof_conf_get_int(IBPROF_WARMUP_NUMBER)) : 0),
 	                        TO_TIME(hash_obj->hash_table[i].t_max),
-	                        TO_TIME(hash_obj->hash_table[i].t_min),
+	                        (hash_obj->hash_table[i].count > 0 ? TO_TIME(hash_obj->hash_table[i].t_min) : 0),
 							hash_obj->hash_table[i].mode_data.err));
 				break;
 
@@ -162,9 +168,10 @@ const char *ibprof_hash_dump(IBPROF_HASH_OBJECT *hash_obj,
 							format(module, call_name, "%ld %f %f %f %f",
 							hash_obj->hash_table[i].count,
 	                        TO_TIME(hash_obj->hash_table[i].t_tot),
-	                        TO_TIME(hash_obj->hash_table[i].t_tot) / (hash_obj->hash_table[i].count - ibprof_conf_get_int(IBPROF_WARMUP_NUMBER)),
+	                        (hash_obj->hash_table[i].count > 0 ?
+					TO_TIME(hash_obj->hash_table[i].t_tot) / (hash_obj->hash_table[i].count - ibprof_conf_get_int(IBPROF_WARMUP_NUMBER)) : 0),
 	                        TO_TIME(hash_obj->hash_table[i].t_max),
-	                        TO_TIME(hash_obj->hash_table[i].t_min)));
+	                        (hash_obj->hash_table[i].count > 0 ? TO_TIME(hash_obj->hash_table[i].t_min) : 0)));
 				break;
 			}
 			if (ret >= 0)
