@@ -117,6 +117,7 @@ static INLINE IBPROF_HASH_OBJ *ibprof_hash_find(IBPROF_HASH_OBJECT *hash_obj,
 			sys_memset(entry, 0, sizeof(*entry));
 			entry->key = key;
 			entry->count = 0;
+			entry->t_start = UNDEFINED_VALUE;
 			entry->t_tot = 0.0;
 			entry->t_max = 0.0;
 			entry->t_min = DBL_MAX;
