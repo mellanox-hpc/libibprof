@@ -119,7 +119,7 @@ void ibprof_interval_start(int callid, const char* name)
 		key = HASH_KEY_SET(IBPROF_MODULE_USER, callid, ibprof_obj->task_obj->procid, 0);
 
 		entry = ibprof_hash_find(ibprof_obj->hash_obj, key);
-		if (entry){
+		if (entry && (entry->t_start < 0)){
 			if (!entry->call_name[0])
 				strncpy(entry->call_name, name, sizeof(entry->call_name) - 1);
 			entry->t_start = ibprof_timestamp();
@@ -136,9 +136,10 @@ void ibprof_interval_end(int callid)
 		key = HASH_KEY_SET(IBPROF_MODULE_USER, callid, ibprof_obj->task_obj->procid, 0);
 
 		entry = ibprof_hash_find(ibprof_obj->hash_obj, key);
-		if (entry){
+		if (entry && (entry->t_start >= 0)){
 			ibprof_hash_update(ibprof_obj->hash_obj, entry,
 						ibprof_timestamp_diff(entry->t_start));
+			entry->t_start = UNDEFINED_VALUE;
 		}
 	}
 }
