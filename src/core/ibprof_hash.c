@@ -114,14 +114,15 @@ double ibprof_hash_module_total(IBPROF_HASH_OBJECT *hash_obj,
  *
  * @return formatted string
  ***************************************************************************/
-const char *ibprof_hash_dump(IBPROF_HASH_OBJECT *hash_obj,
+char *ibprof_hash_dump(IBPROF_HASH_OBJECT *hash_obj,
 				int module,
 				int call,
 				int rank,
 				const char *(*format)(int module, const char* call_name, const char* stats_fmt, ...)) {
-	static char buffer[1024];
-	char *dest = buffer;
+	char *buffer = NULL;
+	char *dest = NULL;
 	char *call_name = NULL;
+	int buffer_len = 0;
 	int dest_len = 0;
 	int ret = 0;
 	int i = 0;
@@ -129,8 +130,14 @@ const char *ibprof_hash_dump(IBPROF_HASH_OBJECT *hash_obj,
 	if (!hash_obj || !format)
 		return NULL;
 
-	buffer[0] = '\0';
-	for (i = 0; i < hash_obj->size; i++) {
+	buffer_len = 1024;
+	buffer=sys_malloc(buffer_len);
+	if (!buffer)
+		return NULL;
+	buffer[dest_len] = '\0';
+	dest = buffer;
+
+	for (i = 0; (i < hash_obj->size) && (ret >= 0); i++) {
 		if (hash_obj->hash_table[i].key != HASH_KEY_INVALID) {
 			if (module != HASH_KEY_GET_MODULE(hash_obj->hash_table[i].key))
 				continue;
@@ -148,10 +155,20 @@ const char *ibprof_hash_dump(IBPROF_HASH_OBJECT *hash_obj,
 			if (rank != HASH_KEY_GET_RANK(hash_obj->hash_table[i].key))
 				continue;
 
+			if (dest_len > (buffer_len - 100)) {
+				buffer_len += 1024;
+				buffer = realloc(buffer, buffer_len);
+				if (!buffer) {
+					return NULL;
+				}
+				buffer[dest_len] = '\0';
+				dest = buffer;
+			}
+
 			switch (ibprof_conf_get_mode(module)) {
 			case IBPROF_MODE_ERR:
 				ret = sys_snprintf_safe((dest + dest_len),
-							(sizeof(buffer) - dest_len), "%s",
+							(buffer_len - dest_len), "%s",
 							format(module, call_name, "%ld %f %f %f %f %ld",
 							hash_obj->hash_table[i].count,
 	                        TO_TIME(hash_obj->hash_table[i].t_tot),
@@ -164,7 +181,7 @@ const char *ibprof_hash_dump(IBPROF_HASH_OBJECT *hash_obj,
 
 			default:
 				ret = sys_snprintf_safe((dest + dest_len),
-							(sizeof(buffer) - dest_len), "%s",
+							(buffer_len - dest_len), "%s",
 							format(module, call_name, "%ld %f %f %f %f",
 							hash_obj->hash_table[i].count,
 	                        TO_TIME(hash_obj->hash_table[i].t_tot),
@@ -174,16 +191,21 @@ const char *ibprof_hash_dump(IBPROF_HASH_OBJECT *hash_obj,
 	                        (hash_obj->hash_table[i].count > 0 ? TO_TIME(hash_obj->hash_table[i].t_min) : 0)));
 				break;
 			}
-			if (ret >= 0)
+			if (ret >= 0) {
 				dest_len += ret;
-
-			if (call == UNDEFINED_VALUE)
-				ret = sys_snprintf_safe((dest + dest_len),
-				(sizeof(buffer) - dest_len),
-				"\n");
-			if (ret >= 0)
-				dest_len += ret;
+				if (call == UNDEFINED_VALUE) {
+					ret = sys_snprintf_safe((dest + dest_len),
+						(buffer_len - dest_len), "\n");
+					if (ret >= 0) {
+						dest_len += ret;
+					}
+				}
+			}
 		}
+	}
+
+	if (ret <= 0) {
+		sys_free(buffer);
 	}
 
 	return (ret > 0 ? buffer : NULL);

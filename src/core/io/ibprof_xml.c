@@ -190,7 +190,7 @@ static const char *_ibprof_hash_format_xml(int module, const char* call_name, co
 static int _ibprof_module_dump(char **module, IBPROF_MODULE_OBJECT *module_obj, IBPROF_HASH_OBJECT* hash_obj, IBPROF_TASK_OBJECT *task_obj)
 {
 	const IBPROF_MODULE_CALL *temp_module_call = NULL;
-	const char *str = NULL;
+	char *str = NULL;
 	double total_time_in_ms = 0;
 	char *module_calls = NULL;
 	int ret = 0;
@@ -221,12 +221,13 @@ static int _ibprof_module_dump(char **module, IBPROF_MODULE_OBJECT *module_obj, 
 				}
 			}
 
+			free(str);
 			temp_module_call++;
 		}
 		sys_free(module_call);
 
 	} else if (module_obj->id == IBPROF_MODULE_USER) {
-				str = ibprof_hash_dump(
+			str = ibprof_hash_dump(
 					hash_obj,
 					module_obj->id,
 					UNDEFINED_VALUE,
@@ -235,6 +236,7 @@ static int _ibprof_module_dump(char **module, IBPROF_MODULE_OBJECT *module_obj, 
 			if (str && str[0]) {
 				ret = sys_asprintf(&module_calls, "%s", str);
 			}
+			free(str);
 	}
 
 	total_time_in_ms = ibprof_hash_module_total(hash_obj,

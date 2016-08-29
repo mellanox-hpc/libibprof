@@ -221,7 +221,7 @@ double ibprof_hash_module_total(IBPROF_HASH_OBJECT *hash_obj,
  *
  * @return formatted string
  ***************************************************************************/
-const char *ibprof_hash_dump(IBPROF_HASH_OBJECT *hash_obj,
+char *ibprof_hash_dump(IBPROF_HASH_OBJECT *hash_obj,
 		int module, int call, int rank,
 		const char *(*format)(int module, const char* call_name, const char* stats_fmt, ...));
 
