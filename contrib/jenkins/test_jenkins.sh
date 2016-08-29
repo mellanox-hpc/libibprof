@@ -206,8 +206,8 @@ set -e
   ./autogen.sh 
   ./configure
   cov-build --dir $cov_build make $make_opt all
-  nerrors=$(cov-analyze --dir $cov_build |grep "Defect occurrences found" | awk '{print $5}')
-  cov-format-errors --dir $cov_build
+  cov-analyze --dir $cov_build
+  nerrors=$(cov-format-errors --dir $cov_build | awk '/Processing [0-9]+ errors?/ { print $2 }')
 
   index_html=$(cd $cov_build && find . -name index.html | cut -c 3-)
   cov_url="$JOB_URL/ws/$cov_build_id/${index_html}"
@@ -227,5 +227,6 @@ set -e
           gh pr $ghprbPullId --comment "$(cat $gh_cov_msg)"
       fi
   fi
+  module unload tools/cov
 
 fi

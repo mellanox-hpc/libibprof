@@ -161,7 +161,7 @@ static const char *_ibprof_hash_format_plain(int module, const char* call_name, 
 static void _ibprof_module_dump(FILE* file, IBPROF_MODULE_OBJECT *module_obj, IBPROF_HASH_OBJECT* hash_obj, int proc_id)
 {
 	const IBPROF_MODULE_CALL *temp_module_call = NULL;
-	const char *str = NULL;
+	char *str = NULL;
 
 	plain_output(file, "\n");
 	switch (ibprof_conf_get_mode(module_obj->id)) {
@@ -193,6 +193,8 @@ static void _ibprof_module_dump(FILE* file, IBPROF_MODULE_OBJECT *module_obj, IB
 				plain_output(file, "%-30.30s : %s\n",
 					(temp_module_call->name ? temp_module_call->name : "unknown"), str);
 			}
+
+			sys_free(str);
 			temp_module_call++;
 		}
 	} else if (module_obj->id == IBPROF_MODULE_USER) {
@@ -203,6 +205,7 @@ static void _ibprof_module_dump(FILE* file, IBPROF_MODULE_OBJECT *module_obj, IB
 		if (str && str[0]) {
 			plain_output(file, "%s", str);
 		}
+		sys_free(str);
 	}
 	plain_output(file, DELIMITER);
 
