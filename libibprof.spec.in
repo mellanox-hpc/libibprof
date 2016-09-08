@@ -27,8 +27,8 @@ Release: %{rel}
 License: Proprietary
 Group: Applications
 Source: %{pkgname}-%{version}.tar.gz
-Requires: libibverbs hcoll mxm >= 2.0
-BuildRequires: gcc-c++ libstdc++ libstdc++-devel libibverbs-devel hcoll mxm >= 2.0
+Requires: libibverbs hcoll mxm >= 2.0 oshmem >= 1.3
+BuildRequires: gcc-c++ libstdc++ libstdc++-devel libibverbs-devel hcoll mxm >= 2.0 oshmem >= 1.3
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 URL: http://www.mellanox.com
 Prefix: %{prefix}
@@ -51,6 +51,7 @@ rm -rf $RPM_BUILD_ROOT
 
 mxm_dir=$(pkg-config --variable=prefix mxm||:)
 hcoll_dir=$(pkg-config --variable=prefix hcoll||:)
+shmem_dir=$(pkg-config --variable=prefix shmem||:)
 
 RPM_CPPFLAGS=""
 if [ -d "$mxm_dir" ]; then
@@ -59,6 +60,10 @@ fi
 
 if [ -d "$hcoll_dir" ]; then
     RPM_CPPFLAGS="$RPM_CPPFLAGS -I$hcoll_dir/include -DUSE_HCOLL=1 -Wno-unused-variable"
+fi
+
+if [ -d "$shmem_dir" ]; then
+    RPM_CPPFLAGS="$RPM_CPPFLAGS -I$shmem_dir/include -DUSE_SHMEM=1"
 fi
 
 test -n "$RPM_CPPFLAGS" && CPPFLAGS="${RPM_CPPFLAGS}"
