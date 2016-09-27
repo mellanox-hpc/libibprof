@@ -221,10 +221,8 @@
 	OP(shmem_set_cache_inv) \
 	OP(shmem_set_cache_line_inv) \
 	OP(shmem_clear_cache_inv) \
-	OP(shmem_clear_cache_line_inv)
-
-
-#define OP_ON_MEMBERS_LIST_EX(OP) \
+	OP(shmem_clear_cache_line_inv) \
+\
 	OP(shmem_char_put_nbi) \
 	OP(shmem_short_put_nbi) \
 	OP(shmem_int_put_nbi) \
@@ -647,9 +645,7 @@ static struct module_context_t {
 	void TYPE ## shmem_clear_cache_inv(void) \
 		{ FUNC_BODY_VOID(TYPE, shmem_clear_cache_inv) }; \
 	void TYPE ## shmem_clear_cache_line_inv(void* target) \
-		{ FUNC_BODY_VOID(TYPE, shmem_clear_cache_line_inv, target) };
-
-#define DECLARE_OPTION_FUNCTIONS_PROTOTYPED_EX(TYPE) \
+		{ FUNC_BODY_VOID(TYPE, shmem_clear_cache_line_inv, target) }; \
 \
 	void TYPE ## shmem_char_put_nbi(char *target, const char *source, size_t len, int pe) \
 		{ FUNC_BODY_VOID(TYPE, shmem_char_put_nbi, target, source, len, pe) }; \
@@ -811,7 +807,6 @@ static IBPROF_ERROR __shmem_init(IBPROF_MODULE_OBJECT *mod_obj)
 	check_dlsym(shmem_iput64);
 	check_dlsym(shmem_iput128);
 
-#if 0 /* v1.3 nbi/alltoall*/
 	check_dlsym(shmem_char_put_nbi);
 	check_dlsym(shmem_short_put_nbi);
 	check_dlsym(shmem_int_put_nbi);
@@ -826,7 +821,7 @@ static IBPROF_ERROR __shmem_init(IBPROF_MODULE_OBJECT *mod_obj)
 	check_dlsym(shmem_put64_nbi);
 	check_dlsym(shmem_put128_nbi);
 	check_dlsym(shmem_putmem_nbi);
-#endif
+
 	check_dlsym(shmem_char_g);
 	check_dlsym(shmem_short_g);
 	check_dlsym(shmem_int_g);
@@ -858,7 +853,7 @@ static IBPROF_ERROR __shmem_init(IBPROF_MODULE_OBJECT *mod_obj)
 	check_dlsym(shmem_iget32);
 	check_dlsym(shmem_iget64);
 	check_dlsym(shmem_iget128);
-#if 0 /* v1.3 nbi/alltoall*/
+
 	check_dlsym(shmem_char_get_nbi);
 	check_dlsym(shmem_short_get_nbi);
 	check_dlsym(shmem_int_get_nbi);
@@ -873,7 +868,6 @@ static IBPROF_ERROR __shmem_init(IBPROF_MODULE_OBJECT *mod_obj)
 	check_dlsym(shmem_get64_nbi);
 	check_dlsym(shmem_get128_nbi);
 	check_dlsym(shmem_getmem_nbi);
-#endif
 
 	check_dlsym(shmem_swap);
 	check_dlsym(shmem_double_swap);
@@ -929,12 +923,12 @@ static IBPROF_ERROR __shmem_init(IBPROF_MODULE_OBJECT *mod_obj)
 	check_dlsym(shmem_collect64);
 	check_dlsym(shmem_fcollect32);
 	check_dlsym(shmem_fcollect64);
-#if 0 /* v1.3 nbi/alltoall*/
+
 	check_dlsym(shmem_alltoall32);
 	check_dlsym(shmem_alltoall64);
 	check_dlsym(shmem_alltoalls32);
 	check_dlsym(shmem_alltoalls64);
-#endif
+
 	check_dlsym(shmem_short_and_to_all);
 	check_dlsym(shmem_int_and_to_all);
 	check_dlsym(shmem_long_and_to_all);
