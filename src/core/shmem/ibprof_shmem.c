@@ -110,7 +110,6 @@
 	OP(shmem_iget64) \
 	OP(shmem_iget128) \
 \
-	OP(shmem_swap) \
 	OP(shmem_double_swap) \
 	OP(shmem_float_swap) \
 	OP(shmem_int_swap) \
@@ -439,8 +438,6 @@ static struct module_context_t {
 	void TYPE ## shmem_iget128(void *target, const void *source, ptrdiff_t tst, ptrdiff_t sst, size_t len, int pe) \
 		{ FUNC_BODY_VOID(TYPE, shmem_iget128, target, source, tst, sst, len, pe) }; \
 \
-	long TYPE ## shmem_swap(long *target, long value, int pe) \
-		{ FUNC_BODY_ANY(long, TYPE, shmem_swap, target, value, pe) }; \
 	double TYPE ## shmem_double_swap(double *target, double value, int pe) \
 		{ FUNC_BODY_ANY(double, TYPE, shmem_double_swap, target, value, pe) }; \
 	float TYPE ## shmem_float_swap(float *target, float value, int pe) \
@@ -663,6 +660,10 @@ static struct module_context_t {
 		{ FUNC_BODY_VOID(TYPE, shmem_longlong_put_nbi, target, source, len, pe) }; \
 	void TYPE ## shmem_longdouble_put_nbi(long double *target, const long double *source, size_t len, int pe) \
 		{ FUNC_BODY_VOID(TYPE, shmem_longdouble_put_nbi, target, source, len, pe) }; \
+	void TYPE ## shmem_put8_nbi(void *target, const void *source, size_t len, int pe) \
+		{ FUNC_BODY_VOID(TYPE, shmem_put8_nbi, target, source, len, pe) }; \
+	void TYPE ## shmem_put16_nbi(void *target, const void *source, size_t len, int pe) \
+		{ FUNC_BODY_VOID(TYPE, shmem_put16_nbi, target, source, len, pe) }; \
 	void TYPE ## shmem_put32_nbi(void *target, const void *source, size_t len, int pe) \
 		{ FUNC_BODY_VOID(TYPE, shmem_put32_nbi, target, source, len, pe) }; \
 	void TYPE ## shmem_put64_nbi(void *target, const void *source, size_t len, int pe) \
@@ -688,6 +689,10 @@ static struct module_context_t {
 		{ FUNC_BODY_VOID(TYPE, shmem_longlong_get_nbi, target, source, len, pe) }; \
 	void TYPE ## shmem_longdouble_get_nbi(long double *target, const long double *source, size_t len, int pe) \
 		{ FUNC_BODY_VOID(TYPE, shmem_longdouble_get_nbi, target, source, len, pe) }; \
+	void TYPE ## shmem_get8_nbi(void *target, const void *source, size_t len, int pe) \
+		{ FUNC_BODY_VOID(TYPE, shmem_get8_nbi, target, source, len, pe) }; \
+	void TYPE ## shmem_get16_nbi(void *target, const void *source, size_t len, int pe) \
+		{ FUNC_BODY_VOID(TYPE, shmem_get16_nbi, target, source, len, pe) }; \
 	void TYPE ## shmem_get32_nbi(void *target, const void *source, size_t len, int pe) \
 		{ FUNC_BODY_VOID(TYPE, shmem_get32_nbi, target, source, len, pe) }; \
 	void TYPE ## shmem_get64_nbi(void *target, const void *source, size_t len, int pe) \
@@ -702,9 +707,9 @@ static struct module_context_t {
 	void TYPE ## shmem_alltoall64(void *target, const void *source, size_t nlong, int PE_start, int logPE_stride, int PE_size, long *pSync) \
 		{ FUNC_BODY_VOID(TYPE, shmem_alltoall64, target, source, nlong, PE_start, logPE_stride, PE_size, pSync) }; \
 	void TYPE ## shmem_alltoalls32(void *target, const void *source, ptrdiff_t dst, ptrdiff_t sst, size_t nlong, int PE_start, int logPE_stride, int PE_size, long *pSync) \
-		{ FUNC_BODY_VOID(TYPE, shmem_alltoall32, target, source, dst, sst, nlong, PE_start, logPE_stride, PE_size, pSync) }; \
+		{ FUNC_BODY_VOID(TYPE, shmem_alltoalls32, target, source, dst, sst, nlong, PE_start, logPE_stride, PE_size, pSync) }; \
 	void TYPE ## shmem_alltoalls64(void *target, const void *source, ptrdiff_t dst, ptrdiff_t sst, size_t nlong, int PE_start, int logPE_stride, int PE_size, long *pSync) \
-		{ FUNC_BODY_VOID(TYPE, shmem_alltoall64, target, source, dst, sst, nlong, PE_start, logPE_stride, PE_size, pSync) }; \
+		{ FUNC_BODY_VOID(TYPE, shmem_alltoalls64, target, source, dst, sst, nlong, PE_start, logPE_stride, PE_size, pSync) }; \
 
 
 /****************************************************************************
@@ -869,7 +874,6 @@ static IBPROF_ERROR __shmem_init(IBPROF_MODULE_OBJECT *mod_obj)
 	check_dlsym(shmem_get128_nbi);
 	check_dlsym(shmem_getmem_nbi);
 
-	check_dlsym(shmem_swap);
 	check_dlsym(shmem_double_swap);
 	check_dlsym(shmem_float_swap);
 	check_dlsym(shmem_int_swap);
