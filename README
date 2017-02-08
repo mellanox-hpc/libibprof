@@ -21,7 +21,7 @@ summary of the calls from libibverbs.so, libmxm.so, libhcoll.so libraries.
 
 ===============================================================================================
 
-libibverbs                     :      count    total(ms)      avg(ms)      max(ms)      min(ms)
+libibverbs                     :        count     total        avg          max      min
 ===============================================================================================
 ibv_get_device_list            :          1       0.8897       0.8897       0.8897       0.8897
 ibv_free_device_list           :          1       0.0001       0.0001       0.0001       0.0001
@@ -52,7 +52,7 @@ Hello from task 4 on jenkins01!
 
 ===============================================================================================
 
-libibverbs                     :      count    total(ms)      avg(ms)      max(ms)      min(ms)
+libibverbs                     :        count     total        avg          max          min
 ===============================================================================================
 ibv_get_device_list            :          1       2.6830       2.6830       2.6830       2.6830
 ibv_free_device_list           :          1       0.0003       0.0003       0.0003       0.0003
@@ -156,6 +156,12 @@ ibv_poll_cq                    :        350       0.1092       0.0003       0.00
   Use following variable to exclude first <count>  of measurements from result
 
     $ export IBPROF_WARMUP_NUMBER=<count>
+
+  Set output time units using IBPROF_TIME_UNITS parameter, Possible values are:
+
+    0 - seconds
+    1 - milliseconds (default value)
+    2 - microseconds
 
 * How to use:
 

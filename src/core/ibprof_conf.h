@@ -24,6 +24,7 @@ typedef enum {
 	IBPROF_FORMAT,
 	IBPROF_ERR_PERCENT,
 	IBPROF_ERR_SEED,
+	IBPROF_TIME_UNITS,
 
 	IBPROF_ENV_OPTIONS_AMOUNT
 } IBPROF_ENV;
@@ -35,5 +36,7 @@ char* ibprof_conf_get_string(IBPROF_ENV variable);;
 int ibprof_conf_get_int(IBPROF_ENV variable);
 
 int ibprof_conf_get_mode(int module);
+
+const char* ibprof_conf_get_time_units();
 
 #endif /* _IBPROF_ENV_H_ */

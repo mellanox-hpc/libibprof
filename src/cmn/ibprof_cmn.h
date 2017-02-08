@@ -154,6 +154,19 @@ enum {
 	IBPROF_LOG_TRACE = 1 << 4
 };
 
+enum {
+	IBPROF_TIME_UNITS_SEC = 0, // First
+	IBPROF_TIME_UNITS_MSEC,
+	IBPROF_TIME_UNITS_USEC,
+	IBPROF_TIME_UNITS_LAST
+};
+
+static const char * const ibprof_time_units_str[] = {
+  "seconds",
+  "milliseconds",
+  "microseconds",
+};
+
 #define IBPROF_FATAL(fmt, ...)                                       \
 	do {                                                             \
 		if (ibprof_conf_get_int(IBPROF_TEST_MASK) & IBPROF_LOG_FATAL) \

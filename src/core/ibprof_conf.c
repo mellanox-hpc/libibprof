@@ -34,6 +34,7 @@ void ibprof_conf_init(void)
 	static const char *ibprof_format = NULL;
 	static int ibprof_err_percent = 1;
 	static int ibprof_err_seed = 1337;
+	static int ibprof_time_units = IBPROF_TIME_UNITS_MSEC;
 
 	enviroment[IBPROF_TEST_MASK] = (void *) &ibprof_test_mask;
 	enviroment[IBPROF_MODE_IBV] = (void *) &ibprof_mode_ibv;
@@ -47,6 +48,7 @@ void ibprof_conf_init(void)
 	enviroment[IBPROF_FORMAT] = (void *) ibprof_format;
 	enviroment[IBPROF_ERR_PERCENT] = (void *) &ibprof_err_percent;
 	enviroment[IBPROF_ERR_SEED] = (void *) &ibprof_err_seed;
+	enviroment[IBPROF_TIME_UNITS] = (void *) &ibprof_time_units;
 
 	_ibprof_conf_init();
 }
@@ -100,6 +102,13 @@ static void _ibprof_conf_init(void)
 	if (env) {
 		*(int *) enviroment[IBPROF_ERR_SEED] = sys_strtol(env, NULL, 0);
 		srand(*(int *) enviroment[IBPROF_ERR_SEED]);
+	}
+
+	env = getenv("IBPROF_TIME_UNITS");
+	if (env) {
+		uint8_t val = sys_strtol(env, NULL, 0);
+		if (val < IBPROF_TIME_UNITS_LAST)
+			*(int *) enviroment[IBPROF_TIME_UNITS] = val;
 	}
 }
 
@@ -231,4 +240,9 @@ int ibprof_conf_get_mode(int module)
 	}
 
 	return mode;
+}
+
+const char* ibprof_conf_get_time_units()
+{
+	return ibprof_time_units_str[*(int *) enviroment[IBPROF_TIME_UNITS]];
 }

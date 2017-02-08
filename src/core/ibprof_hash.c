@@ -8,6 +8,8 @@
  * $HEADER$
  */
 
+#include <math.h>
+
 #include "ibprof_cmn.h"
 #include "ibprof_conf.h"
 #include "ibprof_api.h"
@@ -15,7 +17,12 @@
 
 #include "ibprof_hash.h"
 
-#define TO_TIME(t_val) ((t_val) * 1000)
+static double to_time(double t_val)
+{
+	static long time_units_multiplier;
+	time_units_multiplier = pow(1000, ibprof_conf_get_int(IBPROF_TIME_UNITS));
+	return t_val * time_units_multiplier;
+}
 
 /****************************************************************************
  * Static Function Declarations
@@ -81,7 +88,7 @@ void ibprof_hash_destroy(IBPROF_HASH_OBJECT *hash_obj)
  * ibprof_hash_module_total
  *
  * @brief
- *    Dump total collected time in ms for module.
+ *    Dump total collected time for module.
  *
  * @return formatted string
  ***************************************************************************/
@@ -99,7 +106,7 @@ double ibprof_hash_module_total(IBPROF_HASH_OBJECT *hash_obj,
 			if (rank != HASH_KEY_GET_RANK(hash_obj->hash_table[i].key))
 				continue;
 
-			result_total += TO_TIME(hash_obj->hash_table[i].t_tot);
+			result_total += to_time(hash_obj->hash_table[i].t_tot);
 		}
 	}
 
@@ -171,11 +178,11 @@ char *ibprof_hash_dump(IBPROF_HASH_OBJECT *hash_obj,
 							(buffer_len - dest_len), "%s",
 							format(module, call_name, "%ld %f %f %f %f %ld",
 							hash_obj->hash_table[i].count,
-	                        TO_TIME(hash_obj->hash_table[i].t_tot),
+	                        to_time(hash_obj->hash_table[i].t_tot),
 	                        (hash_obj->hash_table[i].count > 0 ? 
-					TO_TIME(hash_obj->hash_table[i].t_tot) / (hash_obj->hash_table[i].count - ibprof_conf_get_int(IBPROF_WARMUP_NUMBER)) : 0),
-	                        TO_TIME(hash_obj->hash_table[i].t_max),
-	                        (hash_obj->hash_table[i].count > 0 ? TO_TIME(hash_obj->hash_table[i].t_min) : 0),
+					to_time(hash_obj->hash_table[i].t_tot) / (hash_obj->hash_table[i].count - ibprof_conf_get_int(IBPROF_WARMUP_NUMBER)) : 0),
+	                        to_time(hash_obj->hash_table[i].t_max),
+	                        (hash_obj->hash_table[i].count > 0 ? to_time(hash_obj->hash_table[i].t_min) : 0),
 							hash_obj->hash_table[i].mode_data.err));
 				break;
 
@@ -184,11 +191,11 @@ char *ibprof_hash_dump(IBPROF_HASH_OBJECT *hash_obj,
 							(buffer_len - dest_len), "%s",
 							format(module, call_name, "%ld %f %f %f %f",
 							hash_obj->hash_table[i].count,
-	                        TO_TIME(hash_obj->hash_table[i].t_tot),
+	                        to_time(hash_obj->hash_table[i].t_tot),
 	                        (hash_obj->hash_table[i].count > 0 ?
-					TO_TIME(hash_obj->hash_table[i].t_tot) / (hash_obj->hash_table[i].count - ibprof_conf_get_int(IBPROF_WARMUP_NUMBER)) : 0),
-	                        TO_TIME(hash_obj->hash_table[i].t_max),
-	                        (hash_obj->hash_table[i].count > 0 ? TO_TIME(hash_obj->hash_table[i].t_min) : 0)));
+					to_time(hash_obj->hash_table[i].t_tot) / (hash_obj->hash_table[i].count - ibprof_conf_get_int(IBPROF_WARMUP_NUMBER)) : 0),
+	                        to_time(hash_obj->hash_table[i].t_max),
+	                        (hash_obj->hash_table[i].count > 0 ? to_time(hash_obj->hash_table[i].t_min) : 0)));
 				break;
 			}
 			if (ret >= 0) {

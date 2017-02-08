@@ -96,7 +96,8 @@ static int _ibprof_banner_dump(char **root, IBPROF_OBJECT *ibprof_obj)
 					XML("compiled_time", "%s") \
 					XML("copyright", "%s") \
 					XML("task", "%s") \
-					XML("warmup_number", "%d")
+					XML("warmup_number", "%d") \
+					XML("Output time units", "%s")
 				)
 			),
 			__MODULE_NAME,
@@ -105,7 +106,8 @@ static int _ibprof_banner_dump(char **root, IBPROF_OBJECT *ibprof_obj)
 			__TIME__,
 			__MODULE_COPYRIGHT,
 			task_dump,
-			ibprof_conf_get_int(IBPROF_WARMUP_NUMBER));
+			ibprof_conf_get_int(IBPROF_WARMUP_NUMBER),
+			ibprof_conf_get_time_units());
 	}
 
 	sys_free(task_dump);
@@ -161,10 +163,10 @@ static const char *_ibprof_hash_format_xml(int module, const char* call_name, co
 	ret = sys_vsnprintf(stat_buffer,
 		sizeof(buffer),
 		XML("count", "%ld") \
-		XML("total_ms", "%.4f") \
-		XML("avg_ms", "%.4f") \
-		XML("max_ms", "%.4f") \
-		XML("min_ms", "%.4f") \
+		XML("total", "%.4f") \
+		XML("avg", "%.4f") \
+		XML("max", "%.4f") \
+		XML("min", "%.4f") \
 		XML("fail", "%ld"),
 		stats);
 	if (ret >= 0)
@@ -191,7 +193,7 @@ static int _ibprof_module_dump(char **module, IBPROF_MODULE_OBJECT *module_obj, 
 {
 	const IBPROF_MODULE_CALL *temp_module_call = NULL;
 	char *str = NULL;
-	double total_time_in_ms = 0;
+	double total_time = 0;
 	char *module_calls = NULL;
 	int ret = 0;
 
@@ -239,7 +241,7 @@ static int _ibprof_module_dump(char **module, IBPROF_MODULE_OBJECT *module_obj, 
 			free(str);
 	}
 
-	total_time_in_ms = ibprof_hash_module_total(hash_obj,
+	total_time = ibprof_hash_module_total(hash_obj,
 		module_obj->id,
 		task_obj->procid);
 
@@ -251,8 +253,8 @@ static int _ibprof_module_dump(char **module, IBPROF_MODULE_OBJECT *module_obj, 
 			XML("wall_time_percent", "%.4f")),
 			module_obj->name ? module_obj->name : "unknown",
 			module_calls,
-			total_time_in_ms,
-			total_time_in_ms / (task_obj->wall_time * 1.0e+6));
+			total_time,
+			total_time / (task_obj->wall_time * 1.0e+6));
 
 	sys_free(module_calls);
 
