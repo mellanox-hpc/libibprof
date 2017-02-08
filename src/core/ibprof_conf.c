@@ -241,8 +241,3 @@ int ibprof_conf_get_mode(int module)
 
 	return mode;
 }
-
-const char* ibprof_conf_get_time_units()
-{
-	return ibprof_time_units_str[*(int *) enviroment[IBPROF_TIME_UNITS]];
-}

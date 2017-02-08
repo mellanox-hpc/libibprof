@@ -93,7 +93,7 @@ static void _ibprof_banner_dump(FILE* file, IBPROF_OBJECT *ibprof_obj)
 
 	_ibprof_task_dump(ibprof_obj->task_obj);
 	plain_output(file,"warmup number : %d\n", ibprof_conf_get_int(IBPROF_WARMUP_NUMBER));
-	plain_output(file,"Output time units : %s\n", ibprof_conf_get_time_units());
+	plain_output(file,"Output time units : %s\n", ibprof_time_units_str[ibprof_conf_get_int(IBPROF_TIME_UNITS)]);
 	plain_output(file, DELIMITER);
 
 	return;

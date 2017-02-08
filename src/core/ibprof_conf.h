@@ -37,6 +37,4 @@ int ibprof_conf_get_int(IBPROF_ENV variable);
 
 int ibprof_conf_get_mode(int module);
 
-const char* ibprof_conf_get_time_units();
-
 #endif /* _IBPROF_ENV_H_ */

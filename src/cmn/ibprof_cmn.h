@@ -167,6 +167,12 @@ static const char * const ibprof_time_units_str[] = {
   "microseconds",
 };
 
+static long const ibprof_time_units_multiplier_val[] = {
+  1,        // seconds
+  1000,     // milliseconds
+  1000000,  // microseconds
+};
+
 #define IBPROF_FATAL(fmt, ...)                                       \
 	do {                                                             \
 		if (ibprof_conf_get_int(IBPROF_TEST_MASK) & IBPROF_LOG_FATAL) \

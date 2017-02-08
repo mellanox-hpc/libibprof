@@ -107,7 +107,7 @@ static int _ibprof_banner_dump(char **root, IBPROF_OBJECT *ibprof_obj)
 			__MODULE_COPYRIGHT,
 			task_dump,
 			ibprof_conf_get_int(IBPROF_WARMUP_NUMBER),
-			ibprof_conf_get_time_units());
+			ibprof_time_units_str[ibprof_conf_get_int(IBPROF_TIME_UNITS)]);
 	}
 
 	sys_free(task_dump);

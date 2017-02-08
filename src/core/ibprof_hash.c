@@ -8,8 +8,6 @@
  * $HEADER$
  */
 
-#include <math.h>
-
 #include "ibprof_cmn.h"
 #include "ibprof_conf.h"
 #include "ibprof_api.h"
@@ -20,7 +18,7 @@
 static double to_time(double t_val)
 {
 	static long time_units_multiplier;
-	time_units_multiplier = pow(1000, ibprof_conf_get_int(IBPROF_TIME_UNITS));
+	time_units_multiplier = ibprof_time_units_multiplier_val[ibprof_conf_get_int(IBPROF_TIME_UNITS)];
 	return t_val * time_units_multiplier;
 }
 
