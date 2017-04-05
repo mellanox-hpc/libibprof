@@ -97,7 +97,7 @@ static int _ibprof_banner_dump(char **root, IBPROF_OBJECT *ibprof_obj)
 					XML("copyright", "%s") \
 					XML("task", "%s") \
 					XML("warmup_number", "%d") \
-					XML("Output time units", "%s")
+					XML("Output time unit", "%s")
 				)
 			),
 			__MODULE_NAME,

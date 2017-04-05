@@ -167,6 +167,12 @@ static const char * const ibprof_time_units_str[] = {
   "microseconds",
 };
 
+static const char * const ibprof_time_units_short_str[] = {
+  "s ",
+  "ms",
+  "us",
+};
+
 static long const ibprof_time_units_multiplier_val[] = {
   1,        // seconds
   1000,     // milliseconds
