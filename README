@@ -157,6 +157,12 @@ ibv_poll_cq                    :        350       0.1092       0.0003       0.00
 
     $ export IBPROF_WARMUP_NUMBER=<count>
 
+  Set output time units using IBPROF_TIME_UNITS parameter, Possible values are:
+
+    0 - seconds
+    1 - milliseconds (default value)
+    2 - microseconds
+
 * How to use:
 
     $ LD_PRELOAD=<path to install>/lib/libibprof.so ibv_devinfo

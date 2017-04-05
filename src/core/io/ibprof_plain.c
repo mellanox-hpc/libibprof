@@ -41,7 +41,7 @@ void ibprof_io_plain_dump(FILE* file, IBPROF_OBJECT *ibprof_obj)
 {
 	IBPROF_MODULE_OBJECT *temp_module_obj = NULL;
 	int i = 0;
-	double total_time_in_ms = 0;
+	double total_time = 0;
 
 	if (ibprof_conf_get_int(IBPROF_OUTPUT_PREFIX)) {
 		plain_output = _ibprof_io_plain_prefix;
@@ -62,13 +62,13 @@ void ibprof_io_plain_dump(FILE* file, IBPROF_OBJECT *ibprof_obj)
 
 			_ibprof_module_dump(file, temp_module_obj, ibprof_obj->hash_obj, ibprof_obj->task_obj->procid);
 
-			total_time_in_ms = ibprof_hash_module_total(ibprof_obj->hash_obj,
+			total_time = ibprof_hash_module_total(ibprof_obj->hash_obj,
 				temp_module_obj->id,
 				ibprof_obj->task_obj->procid);
 
-			plain_output(file, "%-30.30s :    %20.4f\n", "total", total_time_in_ms);
+			plain_output(file, "%-30.30s :    %20.4f\n", "total", total_time);
 			plain_output(file, DELIMITER);
-			plain_output(file, "%-30.30s :    %20.4f %\n", "wall time (%)", total_time_in_ms
+			plain_output(file, "%-30.30s :    %20.4f %\n", "wall time (%)", total_time
 				/ (ibprof_obj->task_obj->wall_time * 1.0e+6));
 			plain_output(file, DELIMITER);
 		}
@@ -93,6 +93,7 @@ static void _ibprof_banner_dump(FILE* file, IBPROF_OBJECT *ibprof_obj)
 
 	_ibprof_task_dump(ibprof_obj->task_obj);
 	plain_output(file,"warmup number : %d\n", ibprof_conf_get_int(IBPROF_WARMUP_NUMBER));
+	plain_output(file,"Output time unit : %s\n", ibprof_time_units_str[ibprof_conf_get_int(IBPROF_TIME_UNITS)]);
 	plain_output(file, DELIMITER);
 
 	return;
@@ -162,19 +163,23 @@ static void _ibprof_module_dump(FILE* file, IBPROF_MODULE_OBJECT *module_obj, IB
 {
 	const IBPROF_MODULE_CALL *temp_module_call = NULL;
 	char *str = NULL;
+	const char *time_unit = ibprof_time_units_short_str[ibprof_conf_get_int(IBPROF_TIME_UNITS)];
 
 	plain_output(file, "\n");
 	switch (ibprof_conf_get_mode(module_obj->id)) {
 	case IBPROF_MODE_ERR:
-		plain_output(file, "%-30.30s : %10s   %10s   %10s   %10s   %10s   %10s\n",
+		plain_output(file, "%-30.30s : %10s   %6s(%2s)   %6s(%2s)   %6s(%2s)   %6s(%2s)   %10s\n",
 			(module_obj->name ? module_obj->name : "unknown"), "count",
-						"total(ms)", "avg(ms)", "max(ms)", "min(ms)", "fail");
+						"total", time_unit, "avg", time_unit,
+						"max", time_unit, "min", time_unit, "fail");
 		break;
 
 	default:
-		plain_output(file, "%-30.30s : %10s   %10s   %10s   %10s   %10s\n",
+
+		plain_output(file, "%-30.30s : %10s   %6s(%2s)   %6s(%2s)   %6s(%2s)   %6s(%2s)\n",
 			(module_obj->name ? module_obj->name : "unknown"), "count",
-						"total(ms)", "avg(ms)", "max(ms)", "min(ms)");
+						"total", time_unit, "avg", time_unit,
+						"max", time_unit, "min", time_unit);
 		break;
 	}
 	plain_output(file, DELIMITER);

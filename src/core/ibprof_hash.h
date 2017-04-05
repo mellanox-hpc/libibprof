@@ -205,7 +205,7 @@ static INLINE void ibprof_hash_update_ex(IBPROF_HASH_OBJECT *hash_obj,
  * ibprof_hash_module_total
  *
  * @brief
- *    Dump total collected time in ms for module.
+ *    Dump total collected time for module.
  *
  * @return formatted string
  ***************************************************************************/
