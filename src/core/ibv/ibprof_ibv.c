@@ -202,20 +202,6 @@ struct ibv_ctx_t {
 	#define HAVE_IBV_EXP_POST_TASK_CHECK()
 #endif
 
-#ifdef HAVE_EXP_IBV_REG_SHARED_MR
-	#define HAVE_EXP_IBV_REG_SHARED_MR_FUNC(TYPE) \
-        struct ibv_mr* TYPE ## ibv_exp_reg_shared_mr(struct ibv_exp_reg_shared_mr_in *in) \
-        { FUNC_BODY_PTR(TYPE, _EXP, ibv_exp_reg_shared_mr, lib_exp_ibv_reg_shared_mr, in->pd->context, in) }
-	#define HAVE_EXP_IBV_REG_SHARED_MR_OP(OP) \
-		OP(ibv_exp_reg_shared_mr)
-	#define HAVE_EXP_IBV_REG_SHARED_MR_CHECK() \
-		check_api_exp(ibv_exp_reg_shared_mr, lib_exp_ibv_reg_shared_mr)
-#else
-	#define HAVE_EXP_IBV_REG_SHARED_MR_FUNC(TYPE)
-	#define HAVE_EXP_IBV_REG_SHARED_MR_OP(OP)
-	#define HAVE_EXP_IBV_REG_SHARED_MR_CHECK()
-#endif
-
 #ifdef HAVE_IBV_EXP_POLL_CQ_QP
 	#define HAVE_IBV_EXP_POLL_CQ_FUNC(TYPE) \
         int TYPE ## ibv_exp_poll_cq(struct ibv_cq *ibcq, int num_entries, struct ibv_exp_wc *wc, uint32_t wc_size) \
@@ -527,7 +513,6 @@ struct ibv_ctx_t {
 	HAVE_IBV_EXP_CREATE_FLOW_OP(OP) \
 	HAVE_IBV_EXP_DESTROY_FLOW_OP(OP) \
 	HAVE_IBV_EXP_POST_TASK_OP(OP) \
-	HAVE_EXP_IBV_REG_SHARED_MR_OP(OP) \
 	HAVE_IBV_EXP_POLL_CQ_OP(OP) \
 	HAVE_IBV_EXP_CREATE_QP_OP(OP) \
 	HAVE_IBV_EXP_MODIFY_QP_OP(OP) \
@@ -690,7 +675,6 @@ static struct module_context_t {
 		HAVE_IBV_EXP_CREATE_FLOW_FUNC(TYPE) \
 		HAVE_IBV_EXP_DESTROY_FLOW_FUNC(TYPE) \
 		HAVE_IBV_EXP_POST_TASK_FUNC(TYPE) \
-		HAVE_EXP_IBV_REG_SHARED_MR_FUNC(TYPE) \
 		HAVE_IBV_EXP_POLL_CQ_FUNC(TYPE) \
 		HAVE_IBV_EXP_CREATE_QP_FUNC(TYPE) \
 		HAVE_IBV_EXP_MODIFY_QP_FUNC(TYPE) \
@@ -786,7 +770,6 @@ static inline void ibv_open_device_handler(struct ibv_context *ret)
 		HAVE_IBV_EXP_CREATE_FLOW_CHECK();
 		HAVE_IBV_EXP_DESTROY_FLOW_CHECK();
 		HAVE_IBV_EXP_POST_TASK_CHECK();
-		HAVE_EXP_IBV_REG_SHARED_MR_CHECK();
 		HAVE_IBV_EXP_POLL_CQ_CHECK();
 		HAVE_IBV_EXP_CREATE_QP_CHECK();
 		HAVE_IBV_EXP_MODIFY_QP_CHECK();
