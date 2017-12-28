@@ -172,7 +172,6 @@ if test $use_ibv_exp -eq 1; then
 	AC_CHECK_MEMBERS([struct verbs_context_exp.lib_exp_ibv_create_flow],[CFLAGS="$CFLAGS -DHAVE_IBV_EXP_CREATE_FLOW"],[],[[#include <infiniband/verbs_exp.h>]])
 	AC_CHECK_MEMBERS([struct verbs_context_exp.lib_exp_ibv_destroy_flow],[CFLAGS="$CFLAGS -DHAVE_IBV_EXP_DESTROY_FLOW"],[],[[#include <infiniband/verbs_exp.h>]])
 	AC_CHECK_MEMBERS([struct verbs_context_exp.lib_exp_post_task],[CFLAGS="$CFLAGS -DHAVE_IBV_EXP_POST_TASK"],[],[[#include <infiniband/verbs_exp.h>]])
-	AC_CHECK_MEMBERS([struct verbs_context_exp.lib_exp_ibv_reg_shared_mr],[CFLAGS="$CFLAGS -DHAVE_EXP_IBV_REG_SHARED_MR"],[],[[#include <infiniband/verbs_exp.h>]])
 	AC_CHECK_MEMBERS([struct verbs_context_exp.drv_exp_ibv_poll_cq],[CFLAGS="$CFLAGS -DHAVE_IBV_EXP_POLL_CQ"],[],[[#include <infiniband/verbs_exp.h>]])
 	AC_CHECK_MEMBERS([struct verbs_context_exp.lib_exp_create_qp],[CFLAGS="$CFLAGS -DHAVE_IBV_EXP_CREATE_QP"],[],[[#include <infiniband/verbs_exp.h>]])
 	AC_CHECK_MEMBERS([struct verbs_context_exp.lib_exp_modify_qp],[CFLAGS="$CFLAGS -DHAVE_IBV_EXP_MODIFY_QP"],[],[[#include <infiniband/verbs_exp.h>]])
