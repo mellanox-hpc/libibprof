@@ -40,6 +40,7 @@ AC_CONFIG_MACRO_DIR([config/m4])
 LT_INIT
 CFLAGS="$CFLAGS -Wall -Werror"
 CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE -D__LINUX__ -D__MODULE_VERSION=$VERSION"
+LDFLAGS="$LDFLAGS -lpthread"
 
 ##########################
 # Compile with OpenFabrics
