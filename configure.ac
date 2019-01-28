@@ -105,6 +105,9 @@ AC_CHECK_LIB([dl], [dlopen],
     [LIBS="$LIBS -ldl"],
     [AC_MSG_ERROR([libdl not found])])
 
+AC_CHECK_LIB([pthread], [pthread_create], 
+    [LIBS="$LIBS -lpthread"],
+    [AC_MSG_ERROR([pthread not found])])
 
 AC_HEADER_STDC
 
