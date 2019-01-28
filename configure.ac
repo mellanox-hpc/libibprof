@@ -40,7 +40,6 @@ AC_CONFIG_MACRO_DIR([config/m4])
 LT_INIT
 CFLAGS="$CFLAGS -Wall -Werror"
 CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE -D__LINUX__ -D__MODULE_VERSION=$VERSION"
-LDFLAGS="$LDFLAGS -lpthread"
 
 ##########################
 # Compile with OpenFabrics
@@ -106,6 +105,9 @@ AC_CHECK_LIB([dl], [dlopen],
     [LIBS="$LIBS -ldl"],
     [AC_MSG_ERROR([libdl not found])])
 
+AC_CHECK_LIB([pthread], [pthread_create], 
+    [LIBS="$LIBS -lpthread"],
+    [AC_MSG_ERROR([pthread not found])])
 
 AC_HEADER_STDC
 
