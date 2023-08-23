@@ -497,38 +497,32 @@ static int INLINE sys_time(struct timeval *tv)
  ***************************************************************************/
 static unsigned long long INLINE sys_rdtsc(void)
 {
-    unsigned long long int result=0;
-
-#if defined(__LINUX__)
-    #if defined(__i386__)
-        __asm volatile(".byte 0x0f, 0x31" : "=A" (result) : );
-
-    #elif defined(__x86_64__)
-        unsigned hi, lo;
-        __asm volatile("rdtsc" : "=a"(lo), "=d"(hi));
-        result = hi;
-        result = result<<32;
-        result = result|lo;
-
-    #elif defined(__powerpc__)
-        unsigned long int hi, lo, tmp;
-        __asm volatile(
-                    "0:                 \n\t"
-                    "mftbu   %0         \n\t"
-                    "mftb    %1         \n\t"
-                    "mftbu   %2         \n\t"
-                    "cmpw    %2,%0      \n\t"
-                    "bne     0b         \n"
-                    : "=r"(hi),"=r"(lo),"=r"(tmp)
-                    );
-        result = hi;
-        result = result<<32;
-        result = result|lo;
-
-    #endif
-#endif /* __LINUX__ */
-
-    return (result);
+#if defined(__powerpc64__)
+    unsigned long long ret;
+    asm volatile("mftb %0" : "=r"(ret) :);
+    return ret;
+#elif defined(__s390__)
+    unsigned long long ret;
+    asm volatile("stck %0" : "=Q"(ret) : : "cc");
+    return ret;
+#elif defined(__aarch64__)
+    uint64_t ret;
+    asm volatile("isb" : : : "memory");
+    asm volatile("mrs %0, cntvct_el0" : "=r" (ret));
+    return ret;
+#elif defined(__arm__)
+    register uint32_t upper_32, lower_32;
+    // so the compiler will not complain. for
+    // AArch32 compile, this inline is not used
+    // since rdtsc is only supported in an optional timer extension
+    upper_32 = lower_32 = 0;
+    return (((uint64_t)upper_32) << 32) | lower_32;
+#else
+    register uint32_t upper_32, lower_32;
+    // ReaD Time Stamp Counter (RDTCS)
+    __asm__ __volatile__("rdtsc" : "=a"(lower_32), "=d"(upper_32));
+    return (((uint64_t)upper_32) << 32) | lower_32;
+#endif
 }
 
 /**
@@ -590,7 +584,8 @@ static INLINE int sys_procid()
 	str = (str ? str : getenv("SLURM_PROCID"));
 	str = (str ? str : getenv("LS_JOBPID"));
 
-	return str ? sys_strtol(str, NULL, 10) : getpid();
+	/* Rank can not exceed 0xFFFF */
+	return ((str ? sys_strtol(str, NULL, 10) : getpid()) & 0xFFFF);
 }
 
 static INLINE const char* sys_procname()
