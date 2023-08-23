@@ -27,7 +27,7 @@ extern IBPROF_MODULE_OBJECT shmem_module;
  * Configuration options
  ***************************************************************************/
 #ifndef CONF_TIMESTAMP
-#define CONF_TIMESTAMP  1
+#define CONF_TIMESTAMP  0
 #endif
 
 typedef void (*ibprof_format_dump)(FILE*, IBPROF_OBJECT*);
