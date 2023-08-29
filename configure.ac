@@ -112,13 +112,16 @@ AC_CHECK_LIB([pthread], [pthread_create],
 AC_HEADER_STDC
 
 dnl Check VERBS API
+prj_cv_verbs=0
 AC_CHECK_HEADER([infiniband/verbs.h],
     [],
     [AC_MSG_ERROR([ibverbs header files not found])])
 AC_CHECK_LIB([ibverbs], [ibv_get_device_list],
-    [CFLAGS="$CFLAGS -DUSE_IBV=1"],
+    [AC_CHECK_MEMBERS([struct ibv_context_ops._compat_query_device],
+        [AC_MSG_WARN([Installed libibverbs version is not supported])],[CFLAGS="$CFLAGS -DUSE_IBV=1" prj_cv_verbs=1],[[#include <infiniband/verbs.h>]])],
     [AC_MSG_ERROR([libibverbs not found])])
 
+if test "$prj_cv_verbs" -ne 0; then
 
 MOFED_VERSION=-1
 
@@ -215,6 +218,8 @@ if test $MOFED_VERSION -gt 0; then
 	AC_MSG_NOTICE([Current VERBS API version : $MOFED_VERSION])
 else
 	AC_MSG_NOTICE([Current VERBS API version : legacy])
+fi
+
 fi
 
 # Check if the compiler has support for visibility, like some
