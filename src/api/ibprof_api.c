@@ -63,6 +63,9 @@ static IBPROF_MODULE_OBJECT *__ibprof_modules[] = {
 /*
  * It is the core of profiling facility
  */
+void __ibprof_init(void);
+void __ibprof_exit(void);
+
 static IBPROF_OBJECT *ibprof_obj = NULL;	/* Verify a pointer to this object with NULL to check ACTIVE/CLOSE */
 pthread_once_t ibprof_initialized = PTHREAD_ONCE_INIT;
 
@@ -150,6 +153,11 @@ void ibprof_dump(void)
 {
 	if (ibprof_obj && ibprof_hash_count(ibprof_obj->hash_obj)) {
 		format_dump(ibprof_dump_file, ibprof_obj);
+		/* Cleanup hash after dump */
+		ENTER_CRITICAL(&(ibprof_obj->lock));
+		ibprof_hash_destroy(ibprof_obj->hash_obj);
+		ibprof_obj->hash_obj = ibprof_hash_create();
+		LEAVE_CRITICAL(&(ibprof_obj->lock));
 	}
 }
 
