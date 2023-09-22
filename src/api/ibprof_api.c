@@ -120,7 +120,7 @@ void ibprof_interval_start(int callid, const char* name)
 	IBPROF_HASH_OBJ *entry = NULL;
 	HASH_KEY key;
 
-	if (ibprof_obj) {
+	if (ibprof_obj && (callid <= HASH_MAX_CALL)) {
 		key = HASH_KEY_SET(IBPROF_MODULE_USER, callid, ibprof_obj->task_obj->procid, 0);
 
 		entry = ibprof_hash_find(ibprof_obj->hash_obj, key);
@@ -137,7 +137,7 @@ void ibprof_interval_end(int callid)
 	IBPROF_HASH_OBJ *entry = NULL;
 	HASH_KEY key;
 
-	if (ibprof_obj) {
+	if (ibprof_obj && (callid <= HASH_MAX_CALL)) {
 		key = HASH_KEY_SET(IBPROF_MODULE_USER, callid, ibprof_obj->task_obj->procid, 0);
 
 		entry = ibprof_hash_find(ibprof_obj->hash_obj, key);
