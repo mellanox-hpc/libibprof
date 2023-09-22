@@ -22,6 +22,10 @@
 #define HASH_KEY_INVALID    (-1)
 #define HASH_MAX_SIZE       (16301) /* Prime number (4049, 8093, 16301, 32573) */
 
+#define HASH_MAX_MODULE 0xF
+#define HASH_MAX_CALL 0xFF
+#define HASH_MAX_RANK 0xFFFF
+
 #define HASH_KEY_SET(module, call, rank, size)  \
 	(                                           \
 	(((uint64_t)(module) << 60) & 0xF000000000000000) |   \
